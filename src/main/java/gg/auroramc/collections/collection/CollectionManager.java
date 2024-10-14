@@ -1,6 +1,5 @@
 package gg.auroramc.collections.collection;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import gg.auroramc.aurora.api.AuroraAPI;
 import gg.auroramc.aurora.api.events.user.AuroraUserLoadedEvent;
@@ -8,13 +7,25 @@ import gg.auroramc.aurora.api.item.TypeId;
 import gg.auroramc.aurora.api.message.Chat;
 import gg.auroramc.aurora.api.message.Placeholder;
 import gg.auroramc.aurora.api.message.Text;
-import gg.auroramc.aurora.api.reward.*;
+import gg.auroramc.aurora.api.reward.CommandReward;
+import gg.auroramc.aurora.api.reward.ItemReward;
+import gg.auroramc.aurora.api.reward.MoneyReward;
+import gg.auroramc.aurora.api.reward.RewardAutoCorrector;
+import gg.auroramc.aurora.api.reward.RewardExecutor;
+import gg.auroramc.aurora.api.reward.RewardFactory;
 import gg.auroramc.aurora.api.util.NamespacedId;
 import gg.auroramc.collections.AuroraCollections;
 import gg.auroramc.collections.api.event.CollectionLevelUpEvent;
 import gg.auroramc.collections.hooks.HookManager;
 import gg.auroramc.collections.hooks.worldguard.WorldGuardHook;
-import gg.auroramc.collections.listener.*;
+import gg.auroramc.collections.listener.BlockBreakListener;
+import gg.auroramc.collections.listener.DamageListener;
+import gg.auroramc.collections.listener.EntityKillListener;
+import gg.auroramc.collections.listener.FishingListener;
+import gg.auroramc.collections.listener.HarvestingListener;
+import gg.auroramc.collections.listener.PlayerKillListener;
+import gg.auroramc.collections.listener.ShearListener;
+import gg.auroramc.collections.listener.VillagerTradeListener;
 import gg.auroramc.collections.reward.corrector.CommandCorrector;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
@@ -25,7 +36,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 public class CollectionManager implements Listener {
@@ -54,6 +69,7 @@ public class CollectionManager implements Listener {
         Bukkit.getPluginManager().registerEvents(new PlayerKillListener(plugin), plugin);
         Bukkit.getPluginManager().registerEvents(new ShearListener(plugin), plugin);
         Bukkit.getPluginManager().registerEvents(new DamageListener(plugin), plugin);
+        Bukkit.getPluginManager().registerEvents(new VillagerTradeListener(plugin), plugin);
     }
 
     public java.util.Collection<Category> getCategories() {
