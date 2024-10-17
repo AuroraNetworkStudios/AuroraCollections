@@ -20,6 +20,8 @@ public class Config extends AuroraConfig {
     private LevelUpSound levelUpSound;
     private LevelUpMessage levelUpMessage;
     private LevelUpMessage categoryLevelUpMessage;
+    private DiscoverSound discoverSound;
+    private DiscoverMessage discoverMessage;
     private Map<String, DisplayComponent> displayComponents;
     private Boolean preventCreativeMode = false;
     private LeaderboardConfig leaderboard;
@@ -44,6 +46,21 @@ public class Config extends AuroraConfig {
     public static final class DisplayComponent {
         private String title;
         private String line;
+    }
+
+    @Getter
+    public static final class DiscoverMessage {
+        private Boolean enabled;
+        private List<String> message;
+        private Boolean openMenuWhenClicked = false;
+    }
+
+    @Getter
+    public static final class DiscoverSound {
+        private Boolean enabled;
+        private String sound;
+        private Float volume;
+        private Float pitch;
     }
 
     @Getter
@@ -98,6 +115,26 @@ public class Config extends AuroraConfig {
                     yaml.set("command-aliases.progression", List.of("progression"));
 
                     yaml.set("config-version", 2);
+                },
+                (yaml) -> {
+                    yaml.set("config-version", null);
+
+                    yaml.set("discover-message.enabled", true);
+                    yaml.set("discover-message.open-menu-when-clicked", true);
+                    yaml.set("discover-message.message", List.of(
+                            "&3&m----------------------------------------&r",
+                            ' ',
+                            "  &f&l{collection_name} collection discovered&r",
+                            ' ',
+                            "&3&m----------------------------------------"
+                    ));
+
+                    yaml.set("discover-sound.enabled", true);
+                    yaml.set("discover-sound.sound", "ENTITY_PLAYER_LEVELUP");
+                    yaml.set("discover-sound.volume", 1);
+                    yaml.set("discover-sound.pitch", 1);
+
+                    yaml.set("config-version", 3);
                 }
         );
     }

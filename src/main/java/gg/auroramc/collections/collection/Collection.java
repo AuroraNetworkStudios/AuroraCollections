@@ -14,9 +14,11 @@ import gg.auroramc.collections.AuroraCollections;
 import gg.auroramc.collections.api.data.CollectionData;
 import gg.auroramc.collections.api.event.CollectionLevelUpEvent;
 import gg.auroramc.collections.config.CollectionConfig;
+import gg.auroramc.collections.config.Config;
 import gg.auroramc.collections.util.RomanNumber;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Bukkit;
@@ -27,8 +29,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.stream.Stream;
 
 @Getter
 public class Collection {
@@ -142,6 +142,44 @@ public class Collection {
         return multiplier;
     }
 
+    /**
+     * Displays various notifications (if enabled) to users chat
+     *
+     * @param player - the player to send the notification to
+     */
+    public synchronized void displayDiscoverMessage(Player player) {
+        List<Placeholder<?>> placeholders = List.of(
+                Placeholder.of("{collection_name}", this.config.getName())
+        );
+
+        Config.DiscoverMessage message = plugin.getConfigManager().getConfig().getDiscoverMessage();
+        if (message.getEnabled()) {
+            List<String> messageLines = message.getMessage();
+            TextComponent.Builder text = Component.text();
+
+            int count = 0;
+            for (String line : messageLines) {
+                count++;
+                text.append(Text.component(player, line, placeholders));
+                if (messageLines.size() != count) text.append(Component.newline());
+            }
+
+            if (message.getOpenMenuWhenClicked()) {
+                text.clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND,
+                        "/" + plugin.getConfigManager().getConfig().getCommandAliases().getCollections().getFirst() + " " +
+                                plugin.getConfigManager().getConfig().getCommandAliases().getProgression().getFirst() + " " +
+                                category + " " + id));
+            }
+
+            player.sendMessage(text);
+        }
+
+        Config.DiscoverSound sound = plugin.getConfigManager().getConfig().getDiscoverSound();
+        if (sound.getEnabled()) {
+            player.playSound(player.getLocation(), Sound.valueOf(sound.getSound().toUpperCase()), sound.getVolume(), sound.getPitch());
+        }
+    }
+
     public synchronized void progress(Player player, @Nullable TypeId type, int amount, String trigger) {
         if (type != null && !config.getParsedTypes().contains(type)) {
             return;
@@ -151,6 +189,11 @@ public class Collection {
 
         var oldLevel = getPlayerLevel(player);
         var data = AuroraAPI.getUserManager().getUser(player).getData(CollectionData.class);
+
+        // user just started collecting this item
+        if (data.getCollectionCount(category, id) == 0) {
+            this.displayDiscoverMessage(player);
+        }
 
         var actualAmount = amount * getMultiplier(type, trigger);
         data.incrementCollectionCount(category, id, actualAmount);

@@ -35,6 +35,23 @@ level-up-message:
     - ' '
     - "&3&m----------------------------------------"
 
+discover-message:
+  enabled: true
+  open-menu-when-clicked: true
+  message:
+    - "&3&m----------------------------------------&r"
+    - ' '
+    - "  &f&lCollection discovered&r"
+    - "    &e&l{collection_name}&r"
+    - ' '
+    - "&3&m----------------------------------------"
+
+discover-sound:
+  enabled: true
+  sound: "ENTITY_PLAYER_LEVELUP"
+  volume: 1
+  pitch: 1
+
 category-level-up-message:
   enabled: true
   open-menu-when-clicked: true
