@@ -188,18 +188,19 @@ public class Collection {
         if (!AuroraAPI.getUser(player.getUniqueId()).isLoaded()) return;
 
         var oldLevel = getPlayerLevel(player);
-        var newLevel = getPlayerLevel(player);
 
         var data = AuroraAPI.getUserManager().getUser(player).getData(CollectionData.class);
+
+
+        var actualAmount = amount * getMultiplier(type, trigger);
+        data.incrementCollectionCount(category, id, actualAmount);
+
+        var newLevel = getPlayerLevel(player);
 
         // user just started collecting this item
         if (data.getCollectionCount(category, id) == 0) {
             this.displayDiscoverMessage(player, oldLevel, newLevel);
         }
-
-        var actualAmount = amount * getMultiplier(type, trigger);
-        data.incrementCollectionCount(category, id, actualAmount);
-
 
         if (newLevel <= oldLevel) {
             return;
