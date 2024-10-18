@@ -36,7 +36,7 @@ level-up-message:
     - "&3&m----------------------------------------"
 
 discover-message:
-  enabled: true
+  enabled: false
   open-menu-when-clicked: true
   message:
     - "&3&m----------------------------------------&r"
@@ -47,7 +47,7 @@ discover-message:
     - "&3&m----------------------------------------"
 
 discover-sound:
-  enabled: true
+  enabled: false
   sound: "ENTITY_PLAYER_LEVELUP"
   volume: 1
   pitch: 1
@@ -87,4 +87,4 @@ global-level-matchers:
         display: "&8+&b{value_formatted} Global XP"
 
 # Don't touch this unless you know what you're doing
-config-version: 2
+config-version: 3

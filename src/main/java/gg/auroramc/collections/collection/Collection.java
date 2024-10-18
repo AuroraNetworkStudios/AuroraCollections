@@ -147,12 +147,12 @@ public class Collection {
      *
      * @param player - the player to send the notification to
      */
-    public synchronized void displayDiscoverMessage(Player player) {
-        List<Placeholder<?>> placeholders = List.of(
-                Placeholder.of("{collection_name}", this.config.getName())
-        );
+    public void displayDiscoverMessage(Player player, int oldLevel, int newLevel) {
+        List<Placeholder<?>> placeholders = getPlaceholders(player, oldLevel, newLevel);
+        Placeholder<String> rawName = Placeholder.of("{collection_name_raw}", PlainTextComponentSerializer.plainText().serialize(Text.component(this.config.getName())));
+        placeholders.add(rawName);
 
-        Config.DiscoverMessage message = plugin.getConfigManager().getConfig().getDiscoverMessage();
+        Config.GenericMessage message = plugin.getConfigManager().getConfig().getDiscoverMessage();
         if (message.getEnabled()) {
             List<String> messageLines = message.getMessage();
             TextComponent.Builder text = Component.text();
@@ -174,7 +174,7 @@ public class Collection {
             player.sendMessage(text);
         }
 
-        Config.DiscoverSound sound = plugin.getConfigManager().getConfig().getDiscoverSound();
+        Config.GenericSound sound = plugin.getConfigManager().getConfig().getDiscoverSound();
         if (sound.getEnabled()) {
             player.playSound(player.getLocation(), Sound.valueOf(sound.getSound().toUpperCase()), sound.getVolume(), sound.getPitch());
         }
@@ -188,17 +188,18 @@ public class Collection {
         if (!AuroraAPI.getUser(player.getUniqueId()).isLoaded()) return;
 
         var oldLevel = getPlayerLevel(player);
+        var newLevel = getPlayerLevel(player);
+
         var data = AuroraAPI.getUserManager().getUser(player).getData(CollectionData.class);
 
         // user just started collecting this item
         if (data.getCollectionCount(category, id) == 0) {
-            this.displayDiscoverMessage(player);
+            this.displayDiscoverMessage(player, oldLevel, newLevel);
         }
 
         var actualAmount = amount * getMultiplier(type, trigger);
         data.incrementCollectionCount(category, id, actualAmount);
 
-        var newLevel = getPlayerLevel(player);
 
         if (newLevel <= oldLevel) {
             return;
