@@ -4,6 +4,7 @@ import gg.auroramc.aurora.api.config.AuroraConfig;
 import gg.auroramc.aurora.api.config.premade.IntervalMatcherConfig;
 import gg.auroramc.collections.AuroraCollections;
 import lombok.Getter;
+import lombok.ToString;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
@@ -49,6 +50,7 @@ public class Config extends AuroraConfig {
     }
 
     @Getter
+    @ToString
     public static final class GenericMessage {
         private Boolean enabled;
         private Boolean openMenuWhenClicked = false;

@@ -26,6 +26,7 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -77,7 +78,7 @@ public class Collection {
     }
 
     public long getRequiredAmount(long level) {
-        return config.getRequirements().size() < level ? config.getRequirements().getLast() : config.getRequirements().get((int) level - 1);
+        return config.getRequirements().size() < level ? config.getRequirements().getLast() : config.getRequirements().get((int) level != 0 ? (int) level - 1 : 0);
     }
 
     public void resetProgress(Player player) {
