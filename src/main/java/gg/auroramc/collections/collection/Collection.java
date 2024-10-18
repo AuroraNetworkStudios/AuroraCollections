@@ -191,6 +191,7 @@ public class Collection {
 
         var data = AuroraAPI.getUserManager().getUser(player).getData(CollectionData.class);
 
+        boolean displayDiscoverMessage = data.getCollectionCount(category, id) == 0;
 
         var actualAmount = amount * getMultiplier(type, trigger);
         data.incrementCollectionCount(category, id, actualAmount);
@@ -198,7 +199,8 @@ public class Collection {
         var newLevel = getPlayerLevel(player);
 
         // user just started collecting this item
-        if (data.getCollectionCount(category, id) == 0) {
+        if (displayDiscoverMessage) {
+            // when newLevel is available, its already
             this.displayDiscoverMessage(player, oldLevel, newLevel);
         }
 
