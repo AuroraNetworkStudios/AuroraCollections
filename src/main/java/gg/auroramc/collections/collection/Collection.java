@@ -78,7 +78,7 @@ public class Collection {
     }
 
     public long getRequiredAmount(long level) {
-        return config.getRequirements().size() < level ? config.getRequirements().getLast() : config.getRequirements().get((int) level != 0 ? (int) level - 1 : 0);
+        return config.getRequirements().size() < level ? config.getRequirements().getLast() : config.getRequirements().get((int) Math.max(level -1, 0));
     }
 
     public void resetProgress(Player player) {
