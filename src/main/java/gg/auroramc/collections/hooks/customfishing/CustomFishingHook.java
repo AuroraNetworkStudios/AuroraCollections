@@ -32,6 +32,7 @@ public class CustomFishingHook implements Hook {
         for (var loot : BukkitCustomFishingPlugin.getInstance().getLootManager().getRegisteredLoots()) {
             if (loot.type() != LootType.ITEM) continue;
             if (Arrays.stream(loot.lootGroup()).noneMatch(s -> s.contains("river") || s.contains("ocean"))) continue;
+            if (loot.id().equals("vanilla")) continue;
 
             var file = new File(plugin.getDataFolder(), "collections/fishing/0005_cf_" + loot.id() + ".yml");
             if (file.exists()) continue;
