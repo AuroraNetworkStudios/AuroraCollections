@@ -52,6 +52,12 @@ public class CollectionsPlaceholderHandler implements PlaceholderHandler {
                 var category = String.join("_", Arrays.copyOfRange(args, 1, args.length - 1));
                 var level = manager.getCategoryLevel(category, player);
                 return romanNumeral ? RomanNumber.toRoman((long) level) : AuroraAPI.formatNumber(level);
+            } else if (full.endsWith("count_raw")) {
+                return String.valueOf(getCategoryCount(player, args, 2));
+            } else if (full.endsWith("count_short")) {
+                return AuroraAPI.formatNumberShort(getCategoryCount(player, args, 2));
+            } else if (full.endsWith("count")) {
+                return AuroraAPI.formatNumber(getCategoryCount(player, args, 1));
             }
         } else if (full.endsWith("next_count_raw")) {
             var collection = getCollection(Arrays.copyOf(args, args.length - 3));
@@ -89,6 +95,13 @@ public class CollectionsPlaceholderHandler implements PlaceholderHandler {
         }
 
         return null;
+    }
+
+    private double getCategoryCount(Player player, String[] args, int length) {
+        var category = String.join("_", Arrays.copyOfRange(args, 1, args.length - length));
+        var user = AuroraAPI.getUserManager().getUser(player);
+        return plugin.getCollectionManager().getCollectionsByCategory(category).stream()
+                .mapToDouble((collection) -> user.getData(CollectionData.class).getCollectionCount(collection.getCategory(), collection.getId())).sum();
     }
 
     public Collection getCollection(String[] args) {
