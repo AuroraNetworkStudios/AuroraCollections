@@ -35,6 +35,7 @@ repositories {
     maven("https://jitpack.io/")
     maven("https://nexus.phoenixdevt.fr/repository/maven-public/")
     maven("https://repo.oraxen.com/snapshots")
+    maven("https://repo.nexomc.com/snapshots/")
 }
 
 dependencies {
@@ -51,6 +52,7 @@ dependencies {
     compileOnly("io.th0rgal:oraxen:2.0-SNAPSHOT")
     compileOnly("com.sarry20:TopMinion:2.4.3")
     compileOnly("org.me.leo_s:BeeMinions:2.0.9-BETA")
+    compileOnly("com.nexomc:nexo:0.1.0-dev.0")
 
     implementation("co.aikar:acf-paper:0.5.1-SNAPSHOT")
     implementation("org.bstats:bstats-bukkit:3.0.2")

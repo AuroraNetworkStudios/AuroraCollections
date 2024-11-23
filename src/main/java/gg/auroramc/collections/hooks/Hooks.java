@@ -8,6 +8,7 @@ import gg.auroramc.collections.hooks.luckperms.LuckPermsHook;
 import gg.auroramc.collections.hooks.mmoitems.MMOItemsHook;
 import gg.auroramc.collections.hooks.mmolib.MMOLibHook;
 import gg.auroramc.collections.hooks.mythic.MythicHook;
+import gg.auroramc.collections.hooks.nexo.NexoHook;
 import gg.auroramc.collections.hooks.oraxen.OraxenHook;
 import gg.auroramc.collections.hooks.topminions.TopMinionsHook;
 import gg.auroramc.collections.hooks.worldguard.WorldGuardHook;
@@ -22,6 +23,7 @@ public enum Hooks {
     MMOITEMS(MMOItemsHook.class, "MMOItems"),
     MYTHIC_MOBS(MythicHook.class, "MythicMobs"),
     ORAXEN(OraxenHook.class, "Oraxen"),
+    NEXO(NexoHook.class, "Nexo"),
     WORLD_GUARD(WorldGuardHook.class, "WorldGuard"),
     MMOLIB(MMOLibHook.class, "MythicLib"),
     TOP_MINIONS(TopMinionsHook.class, "TopMinion"),
