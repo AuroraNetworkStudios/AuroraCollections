@@ -5,6 +5,7 @@ import dev.aurelium.auraskills.api.event.user.UserLoadEvent;
 import gg.auroramc.aurora.api.item.TypeId;
 import gg.auroramc.collections.AuroraCollections;
 import gg.auroramc.collections.collection.Trigger;
+import gg.auroramc.collections.listener.BlockBreakListener;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -27,6 +28,12 @@ public class AuraSkillsListener implements Listener {
         var item = e.getItem();
         var manager = plugin.getCollectionManager();
         var typeId = TypeId.from(item.getType());
+
+        // mushrooms are probably triggered by foraging luck would be from foraging luck
+        if (BlockBreakListener.specialCrops.contains(item.getType()) && typeId.namespace().equals("minecraft")) {
+            manager.progressCollections(e.getPlayer(), typeId, item.getAmount(), Trigger.HARVEST);
+            return;
+        }
 
         switch (e.getCause()) {
             case FARMING_LUCK, FARMING_OTHER_LOOT ->
