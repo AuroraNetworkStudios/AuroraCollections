@@ -23,6 +23,16 @@ public class BlockBreakListener implements Listener {
     public static final Set<Material> specialCrops = Set.of(Material.WARPED_FUNGUS, Material.CRIMSON_FUNGUS, Material.BROWN_MUSHROOM,
             Material.RED_MUSHROOM, Material.BROWN_MUSHROOM_BLOCK, Material.RED_MUSHROOM_BLOCK, Material.MELON, Material.PUMPKIN);
 
+    private final Set<Material> blacklist = Set.of(
+            Material.CHEST, Material.TRAPPED_CHEST, Material.BARREL,
+            Material.HOPPER, Material.FURNACE, Material.SMOKER, Material.BLAST_FURNACE,
+            Material.DISPENSER, Material.ITEM_FRAME, Material.BEACON,
+            Material.DROPPER, Material.ARMOR_STAND, Material.BREWING_STAND,
+            Material.CAMPFIRE, Material.SOUL_CAMPFIRE, Material.FLOWER_POT,
+            Material.JUKEBOX, Material.LOOM, Material.CARTOGRAPHY_TABLE,
+            Material.DECORATED_POT
+    );
+
     public BlockBreakListener(AuroraCollections plugin) {
         this.plugin = plugin;
     }
@@ -69,6 +79,8 @@ public class BlockBreakListener implements Listener {
             }
             return;
         }
+
+        if (blacklist.contains(e.getBlockState().getType())) return;
 
         for (var drop : e.getItems()) {
             var item = drop.getItemStack();
