@@ -5,10 +5,12 @@ import gg.auroramc.aurora.api.reward.PermissionReward;
 import gg.auroramc.aurora.api.reward.RewardCorrector;
 import gg.auroramc.collections.AuroraCollections;
 import net.luckperms.api.LuckPermsProvider;
+import net.luckperms.api.node.Node;
 import net.luckperms.api.node.NodeEqualityPredicate;
 import net.luckperms.api.util.Tristate;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PermissionCorrector implements RewardCorrector {
@@ -21,6 +23,9 @@ public class PermissionCorrector implements RewardCorrector {
     @Override
     public void correctRewards(Player player) {
         var manager = plugin.getCollectionManager();
+
+        List<Node> nodesToAdd = new ArrayList<>();
+
         for (var collection : manager.getAllCollections()) {
             var level = collection.getPlayerLevel(player);
 
@@ -30,7 +35,7 @@ public class PermissionCorrector implements RewardCorrector {
                 var placeholders = collection.getPlaceholders(player, i);
                 for (var reward : matcher.computeRewards(i)) {
                     if (reward instanceof PermissionReward permissionReward) {
-                        correctPermission(player, permissionReward, placeholders);
+                        nodesToAdd.addAll(getNodes(player, permissionReward, placeholders));
                     }
                 }
             }
@@ -48,27 +53,40 @@ public class PermissionCorrector implements RewardCorrector {
 
             for (var reward : rewards) {
                 if (reward instanceof PermissionReward permissionReward) {
-                    correctPermission(player, permissionReward, placeholders);
+                    nodesToAdd.addAll(getNodes(player, permissionReward, placeholders));
                 }
             }
         }
+
+        if (nodesToAdd.isEmpty()) return;
+
+        var user = LuckPermsProvider.get().getUserManager().getUser(player.getUniqueId());
+        if (user == null) {
+            AuroraCollections.logger().severe("User " + player.getName() + " is not loaded in LuckPerms, failed to correct permission rewards!");
+            return;
+        }
+
+        int addedNodes = 0;
+        for (var node : nodesToAdd) {
+            var hasPermission = user.data().contains(node, NodeEqualityPredicate.EXACT);
+
+            if (hasPermission.equals(Tristate.UNDEFINED)) {
+                AuroraCollections.logger().debug("Permission " + node.getKey() + " is undefined for player " + player.getName());
+                user.data().add(node);
+                addedNodes++;
+            }
+        }
+
+        if (addedNodes > 0) {
+            LuckPermsProvider.get().getUserManager().saveUser(user);
+            AuroraCollections.logger().debug("Added " + addedNodes + " permission nodes to player " + player.getName());
+        }
     }
 
-    private void correctPermission(Player player, PermissionReward permissionReward, List<Placeholder<?>> placeholders) {
+    private List<Node> getNodes(Player player, PermissionReward permissionReward, List<Placeholder<?>> placeholders) {
         if (permissionReward.getPermissions() == null || permissionReward.getPermissions().isEmpty())
-            return;
+            return List.of();
 
-        var nodes = permissionReward.buildNodes(player, placeholders);
-
-        LuckPermsProvider.get().getUserManager().modifyUser(player.getUniqueId(), user -> {
-            for (var node : nodes) {
-                var hasPermission = user.data().contains(node, NodeEqualityPredicate.EXACT);
-
-                if (hasPermission.equals(Tristate.UNDEFINED)) {
-                    AuroraCollections.logger().debug("Permission " + node.getKey() + " is undefined for player " + player.getName());
-                    user.data().add(node);
-                }
-            }
-        });
+        return permissionReward.buildNodes(player, placeholders);
     }
 }
