@@ -19,6 +19,7 @@ public class FishingListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlayerFish(PlayerFishEvent e) {
+        if (e.getState() != PlayerFishEvent.State.CAUGHT_FISH) return;
         if (e.getCaught() == null) return;
         if (!(e.getCaught() instanceof Item item)) return;
 
