@@ -13,7 +13,7 @@ fun loadProperties(filename: String): Properties {
 
 plugins {
     id("java")
-    id("io.github.goooler.shadow") version "8.1.7"
+    id("com.gradleup.shadow") version "8.3.3"
     id("maven-publish")
 }
 
