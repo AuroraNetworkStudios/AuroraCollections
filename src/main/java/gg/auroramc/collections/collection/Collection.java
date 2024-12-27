@@ -60,6 +60,11 @@ public class Collection {
         levelMatcher.reload(collectionMatchers, config.getCustomLevels());
     }
 
+    public boolean hasPermission(Player player) {
+        var categoryHasPermission = plugin.getCollectionManager().getCategory(category).hasPermission(player);
+        return categoryHasPermission && (config.getPermission() == null || player.hasPermission(config.getPermission()));
+    }
+
     public int getMaxLevel() {
         return config.getRequirements().size();
     }

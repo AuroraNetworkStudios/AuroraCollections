@@ -85,7 +85,9 @@ public class CollectionsCommand extends BaseCommand {
         var collections = getCollection(sender, category, collectionId);
         if (collections == null) return;
 
-        for (var collection : collections) {
+        var validCollections = collections.stream().filter(c -> c.hasPermission(target)).toList();
+
+        for (var collection : validCollections) {
             collection.progress(target, null, number, null);
         }
 
@@ -93,7 +95,7 @@ public class CollectionsCommand extends BaseCommand {
             Chat.sendMessage(sender, plugin.getConfigManager().getMessageConfig().getAddSuccess(),
                     Placeholder.of("{player}", target.getName()),
                     Placeholder.of("{number}", AuroraAPI.formatNumber(number)),
-                    Placeholder.of("{collection}", String.join(", ", collections.stream().map(Collection::getId).toList()))
+                    Placeholder.of("{collection}", String.join(", ", validCollections.stream().map(Collection::getId).toList()))
             );
         }
     }

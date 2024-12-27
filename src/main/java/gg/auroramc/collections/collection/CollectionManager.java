@@ -131,8 +131,12 @@ public class CollectionManager implements Listener {
         CompletableFuture.runAsync(() -> {
             var toUpdate = new HashSet<String>();
 
-            for (var category : categories.values()) {
-                for (var collection : category.values()) {
+            for (var category : categories.entrySet()) {
+                if (!getCategory(category.getKey()).hasPermission(player)) continue;
+
+                for (var collection : category.getValue().values()) {
+                    if (!collection.hasPermission(player)) continue;
+
                     String firstMatch = Arrays.stream(triggers)
                             .filter(trigger -> collection.getConfig().getParsedTriggers().contains(trigger))
                             .findFirst()

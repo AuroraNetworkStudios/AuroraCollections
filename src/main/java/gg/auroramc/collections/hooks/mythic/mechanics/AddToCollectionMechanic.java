@@ -48,12 +48,15 @@ public class AddToCollectionMechanic implements ITargetedEntitySkill {
         var user = AuroraAPI.getUserManager().getUser(player);
         if (!user.isLoaded()) return SkillResult.CONDITION_FAILED;
 
-        var data = user.getData(CollectionData.class);
-
         var collection = plugin.getCollectionManager().getCollection(category, collectionId);
-        collection.progress(player, null, amount.get(skillMetadata), null);
 
-        data.setDirty();
+        if (collection == null) {
+            return SkillResult.INVALID_CONFIG;
+        }
+
+        if (collection.hasPermission(player)) {
+            collection.progress(player, null, amount.get(skillMetadata), null);
+        }
 
         return SkillResult.SUCCESS;
     }

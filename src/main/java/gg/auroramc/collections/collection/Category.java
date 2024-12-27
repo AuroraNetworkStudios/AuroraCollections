@@ -5,6 +5,7 @@ import gg.auroramc.aurora.api.reward.Reward;
 import gg.auroramc.aurora.api.reward.RewardFactory;
 import gg.auroramc.collections.config.CategoriesConfig;
 import lombok.Getter;
+import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -21,7 +22,7 @@ public class Category {
         this.id = id;
         this.config = config;
 
-        if(config.getLevels() == null || config.getLevels().isEmpty()) {
+        if (config.getLevels() == null || config.getLevels().isEmpty()) {
             levelingEnabled = false;
             return;
         }
@@ -65,5 +66,9 @@ public class Category {
         }
 
         return rewards;
+    }
+
+    public boolean hasPermission(Player player) {
+        return config.getPermission() == null || player.hasPermission(config.getPermission());
     }
 }

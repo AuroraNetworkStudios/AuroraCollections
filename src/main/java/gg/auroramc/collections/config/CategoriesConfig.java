@@ -20,6 +20,7 @@ public class CategoriesConfig extends AuroraConfig {
     @Getter
     public static class CategoryConfig {
         private String name;
+        private String permission;
         private Map<String, LevelConfig> levels;
     }
 
