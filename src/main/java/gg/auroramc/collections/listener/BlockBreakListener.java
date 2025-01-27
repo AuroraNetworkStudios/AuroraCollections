@@ -18,7 +18,7 @@ public class BlockBreakListener implements Listener {
 
     private final Set<Material> crops = Set.of(Material.WHEAT, Material.POTATOES, Material.CARROTS, Material.BEETROOTS, Material.COCOA, Material.NETHER_WART);
 
-    private final Set<Material> blockCrops = Set.of(Material.SUGAR_CANE, Material.CACTUS, Material.BAMBOO);
+    private final Set<Material> blockCrops = Set.of(Material.SUGAR_CANE, Material.CACTUS, Material.BAMBOO, Material.KELP_PLANT);
 
     public static final Set<Material> specialCrops = Set.of(Material.WARPED_FUNGUS, Material.CRIMSON_FUNGUS, Material.BROWN_MUSHROOM,
             Material.RED_MUSHROOM, Material.BROWN_MUSHROOM_BLOCK, Material.RED_MUSHROOM_BLOCK, Material.MELON, Material.PUMPKIN);
@@ -84,7 +84,8 @@ public class BlockBreakListener implements Listener {
 
         for (var drop : e.getItems()) {
             var item = drop.getItemStack();
-            manager.progressCollections(player, TypeId.from(item.getType()), item.getAmount(), Trigger.BLOCK_LOOT);
+            var id = AuroraAPI.getItemManager().resolveId(item);
+            manager.progressCollections(player, id, item.getAmount(), Trigger.BLOCK_LOOT);
         }
     }
 }

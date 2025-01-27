@@ -45,7 +45,7 @@ dependencies {
     compileOnly("net.luckperms:api:5.4")
     compileOnly("dev.aurelium:auraskills-api-bukkit:2.0.7")
     compileOnly("io.lumine:Mythic-Dist:5.6.1")
-    compileOnly("com.github.Xiao-MoMi:Custom-Fishing:2.2.34")
+    compileOnly("com.github.Xiao-MoMi:Custom-Fishing:2.3.3")
     compileOnly("com.sk89q.worldguard:worldguard-bukkit:7.0.7")
     compileOnly("io.lumine:MythicLib-dist:1.6.2-SNAPSHOT")
     compileOnly("net.Indyuce:MMOItems-API:6.10-SNAPSHOT")
