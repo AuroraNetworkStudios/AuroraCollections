@@ -24,7 +24,7 @@ public class CollectionConfig extends AuroraConfig {
     private String menuTitle;
     private String permission;
     private List<Integer> requirements;
-    private Boolean useGlobalLevelMatchers;
+    private Boolean useGlobalLevelMatchers = false;
     private Map<String, IntervalMatcherConfig> levelMatchers;
     private Map<String, ConcreteMatcherConfig> customLevels;
     private ItemConfig menuItem;
