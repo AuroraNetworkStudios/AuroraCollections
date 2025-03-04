@@ -288,7 +288,9 @@ public class CollectionManager implements Listener {
 
         var collectionsInCategory = plugin.getCollectionManager().getCollectionsByCategory(category);
         var maxedCollections = collectionsInCategory.stream().filter(c -> c.isMaxed(player)).count();
+        var unlockedCollections = collectionsInCategory.stream().filter(c -> c.isUnlocked(player)).count();
         var maxedPercent = Math.min((double) maxedCollections / collectionsInCategory.size(), 1);
+        var unlockedPercent = Math.min((double) unlockedCollections / collectionsInCategory.size(), 1);
 
         var config = plugin.getConfigManager().getCategoriesMenuConfig();
         var bar = config.getProgressBar();
@@ -302,6 +304,9 @@ public class CollectionManager implements Listener {
         var maxedCompletedPcs = ((Double) Math.floor(pcs * maxedCompletedPercent)).intValue();
         var maxedRemainingPcs = pcs - maxedCompletedPcs;
 
+        var unlockedCompletedPcs = ((Double) Math.floor(pcs * unlockedPercent)).intValue();
+        var unlockedRemainingPcs = pcs - unlockedCompletedPcs;
+
         placeholders.add(Placeholder.of("{name}", categoryName));
         placeholders.add(Placeholder.of("{progress_percent}", currentPercentage));
         placeholders.add(Placeholder.of("{progressbar}", bar.getFilledCharacter().repeat(completedPcs) + bar.getUnfilledCharacter().repeat(remainingPcs) + "&r"));
@@ -309,6 +314,32 @@ public class CollectionManager implements Listener {
         placeholders.add(Placeholder.of("{maxed_collection_count}", AuroraAPI.formatNumber(maxedCollections)));
         placeholders.add(Placeholder.of("{total_collection_count}", AuroraAPI.formatNumber(collectionsInCategory.size())));
         placeholders.add(Placeholder.of("{maxed_progress_percent}", AuroraAPI.formatNumber(maxedPercent * 100)));
+        placeholders.add(Placeholder.of("{unlocked_collection_count}", AuroraAPI.formatNumber(unlockedCollections)));
+        placeholders.add(Placeholder.of("{unlocked_progressbar}", bar.getFilledCharacter().repeat(unlockedCompletedPcs) + bar.getUnfilledCharacter().repeat(unlockedRemainingPcs) + "&r"));
+        placeholders.add(Placeholder.of("{unlocked_progress_percent}", AuroraAPI.formatNumber(unlockedPercent * 100)));
+
+        return placeholders;
+    }
+
+    public List<Placeholder<?>> getGlobalPlaceholders(Player player) {
+        List<Placeholder<?>> placeholders = new ArrayList<>();
+
+        var allCollections = plugin.getCollectionManager().getAllCollections();
+        var unlockedCollections = allCollections.stream().filter(c -> c.isUnlocked(player)).count();
+        var totalCollections = allCollections.size();
+
+        var unlockedPercent = totalCollections > 0 ? (double) unlockedCollections / totalCollections : 0;
+
+        var config = plugin.getConfigManager().getCategoriesMenuConfig();
+        var bar = config.getProgressBar();
+        var pcs = bar.getLength();
+        var completedPcs = (int) Math.floor(pcs * unlockedPercent);
+        var remainingPcs = pcs - completedPcs;
+
+        placeholders.add(Placeholder.of("{unlocked_total_count}", AuroraAPI.formatNumber(unlockedCollections)));
+        placeholders.add(Placeholder.of("{total_all_collection_count}", AuroraAPI.formatNumber(totalCollections)));
+        placeholders.add(Placeholder.of("{unlocked_total_progressbar}", bar.getFilledCharacter().repeat(completedPcs) + bar.getUnfilledCharacter().repeat(remainingPcs) + "&r"));
+        placeholders.add(Placeholder.of("{unlocked_total_percent}", AuroraAPI.formatNumber(unlockedPercent * 100)));
 
         return placeholders;
     }
