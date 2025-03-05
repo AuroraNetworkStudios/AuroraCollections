@@ -49,7 +49,7 @@ dependencies {
     compileOnly("io.lumine:Mythic-Dist:5.6.1")
     compileOnly("com.github.Xiao-MoMi:Custom-Fishing:2.3.3")
     compileOnly("com.sk89q.worldguard:worldguard-bukkit:7.0.7")
-    compileOnly("io.lumine:MythicLib-dist:1.6.2-SNAPSHOT")
+    compileOnly("io.lumine:MythicLib-dist:1.7.1-SNAPSHOT")
     compileOnly("net.Indyuce:MMOItems-API:6.10-SNAPSHOT")
     compileOnly("io.th0rgal:oraxen:2.0-SNAPSHOT")
     compileOnly("com.sarry20:TopMinion:2.4.3")

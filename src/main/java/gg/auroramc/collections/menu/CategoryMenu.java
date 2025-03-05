@@ -35,13 +35,16 @@ public class CategoryMenu {
             menu.addFiller(ItemBuilder.filler(Material.AIR));
         }
 
+        var globalPlaceholders = plugin.getCollectionManager().getGlobalPlaceholders(player);
+
         for (var customItem : config.getCustomItems().values()) {
-            menu.addItem(ItemBuilder.of(customItem).build(player));
+            menu.addItem(ItemBuilder.of(customItem).placeholder(globalPlaceholders).build(player));
         }
 
         for (var item : config.getItems().entrySet()) {
             var category = item.getKey();
             var placeholders = plugin.getCollectionManager().getCategoryPlaceholders(category, player);
+            placeholders.addAll(globalPlaceholders);
 
             menu.addItem(ItemBuilder.of(item.getValue()).placeholder(placeholders).build(player),
                     (e) -> {

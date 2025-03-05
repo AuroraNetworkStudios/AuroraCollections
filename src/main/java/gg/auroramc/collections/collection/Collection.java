@@ -100,6 +100,10 @@ public class Collection {
         return getPlayerLevel(player) >= getMaxLevel();
     }
 
+    public boolean isUnlocked(Player player) {
+        return getCount(player) > 0;
+    }
+
     public void removeProgress(Player player, int amount) {
         var user = AuroraAPI.getUserManager().getUser(player);
         if (!user.isLoaded()) return;

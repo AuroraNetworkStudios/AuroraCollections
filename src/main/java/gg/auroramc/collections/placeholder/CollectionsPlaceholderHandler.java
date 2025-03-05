@@ -30,8 +30,20 @@ public class CollectionsPlaceholderHandler implements PlaceholderHandler {
     @Override
     public String onPlaceholderRequest(Player player, String[] args) {
         if (args.length < 3) return null;
+
         var manager = plugin.getCollectionManager();
-        var romanNumeral = plugin.getConfigManager().getCollectionMenuConfig().getForceRomanNumerals();
+        var config = plugin.getConfigManager();
+
+        var allCollections = manager.getAllCollections();
+        var unlockedCollections = allCollections.stream().filter(c -> c.isUnlocked(player)).count();
+        var totalCollections = allCollections.size();
+        var unlockedPercent = totalCollections > 0 ? (double) unlockedCollections / totalCollections : 0;
+        var bar = config.getCategoriesMenuConfig().getProgressBar();
+        var pcs = bar.getLength();
+        var completedPcs = (int) Math.floor(pcs * unlockedPercent);
+        var remainingPcs = pcs - completedPcs;
+
+        var romanNumeral = config.getCollectionMenuConfig().getForceRomanNumerals();
         var full = String.join("_", args);
 
         if (args[0].equals("category")) {
@@ -92,6 +104,16 @@ public class CollectionsPlaceholderHandler implements PlaceholderHandler {
             var collection = getCollection(Arrays.copyOf(args, args.length - 1));
             if (collection == null) return null;
             return collection.getConfig().getName();
+        } else if (args[0].equals("unlocked")) {
+            if (full.endsWith("count_total")) {
+                return AuroraAPI.formatNumber(unlockedCollections);
+            } else if (full.endsWith("count_total_all_collection")) {
+                return AuroraAPI.formatNumber(totalCollections);
+            } else if (full.endsWith("total_progressbar")) {
+                return bar.getFilledCharacter().repeat(completedPcs) + bar.getUnfilledCharacter().repeat(remainingPcs) + "&r";
+            } else if (full.endsWith("total_percent")) {
+                return AuroraAPI.formatNumber(unlockedPercent * 100);
+            }
         }
 
         return null;
@@ -121,7 +143,8 @@ public class CollectionsPlaceholderHandler implements PlaceholderHandler {
     public List<String> getPatterns() {
         var manager = plugin.getCollectionManager();
 
-        return manager.getAllCollections().stream().flatMap(c -> Stream.of(
+        return Stream.concat(
+                manager.getAllCollections().stream().flatMap(c -> Stream.of(
                         "category_" + c.getCategory() + "_level",
                         "category_" + c.getCategory() + "_level_raw",
                         "category_" + c.getCategory() + "_max_level",
@@ -133,7 +156,14 @@ public class CollectionsPlaceholderHandler implements PlaceholderHandler {
                         c.getCategory() + "_" + c.getId() + "_count",
                         c.getCategory() + "_" + c.getId() + "_count_raw",
                         c.getCategory() + "_" + c.getId() + "_next_count",
-                        c.getCategory() + "_" + c.getId() + "_next_count_raw"))
-                .toList();
+                        c.getCategory() + "_" + c.getId() + "_next_count_raw"
+                )),
+                Stream.of(
+                        "unlocked_count_total",
+                        "unlocked_count_total_all_collection",
+                        "unlocked_total_progressbar",
+                        "unlocked_total_percent"
+                )
+        ).toList();
     }
 }
