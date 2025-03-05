@@ -143,7 +143,8 @@ public class CollectionsPlaceholderHandler implements PlaceholderHandler {
     public List<String> getPatterns() {
         var manager = plugin.getCollectionManager();
 
-        return manager.getAllCollections().stream().flatMap(c -> Stream.of(
+        return Stream.concat(
+                manager.getAllCollections().stream().flatMap(c -> Stream.of(
                         "category_" + c.getCategory() + "_level",
                         "category_" + c.getCategory() + "_level_raw",
                         "category_" + c.getCategory() + "_max_level",
@@ -155,11 +156,14 @@ public class CollectionsPlaceholderHandler implements PlaceholderHandler {
                         c.getCategory() + "_" + c.getId() + "_count",
                         c.getCategory() + "_" + c.getId() + "_count_raw",
                         c.getCategory() + "_" + c.getId() + "_next_count",
-                        c.getCategory() + "_" + c.getId() + "_next_count_raw",
+                        c.getCategory() + "_" + c.getId() + "_next_count_raw"
+                )),
+                Stream.of(
                         "unlocked_count_total",
                         "unlocked_count_total_all_collection",
                         "unlocked_total_progressbar",
-                        "unlocked_total_percent"))
-                .toList();
+                        "unlocked_total_percent"
+                )
+        ).toList();
     }
 }
