@@ -36,11 +36,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 public class CollectionManager implements Listener {
@@ -103,7 +99,7 @@ public class CollectionManager implements Listener {
     }
 
     public List<Collection> getCollectionsByCategory(String category) {
-        return List.copyOf(categories.get(category).values());
+        return List.copyOf(categories.getOrDefault(category, Map.of()).values());
     }
 
     public Collection getCollection(String category, String name) {
