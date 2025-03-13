@@ -47,7 +47,7 @@ public class CategoryMenu {
             placeholders.addAll(globalPlaceholders);
             var builtItem = ItemBuilder.of(item.getValue()).placeholder(placeholders).build(player);
 
-            if (plugin.getCollectionManager().getCategory(category).hasPermission(player)) {
+            if (!plugin.getCollectionManager().getCategory(category).hasPermission(player)) {
                 menu.addItem(builtItem);
             } else {
                 menu.addItem(builtItem, (e) -> {
