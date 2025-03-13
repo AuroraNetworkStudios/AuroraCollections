@@ -12,7 +12,7 @@ items, permissions, or even custom rewards.
 ```xml
 <repository>
     <id>auroramc</id>
-    <url>https://repo.auroramc.gg/repository/maven-public/</url>
+    <url>https://repo.auroramc.gg/releases/</url>
 </repository>
 ```
 
@@ -30,7 +30,7 @@ items, permissions, or even custom rewards.
 ```gradle
 repositories {
     maven {
-        url "https://repo.auroramc.gg/repository/maven-public/"
+        url "https://repo.auroramc.gg/releases/"
     }
 }
 
@@ -42,7 +42,7 @@ dependencies {
 **Kotlin DSL:**
 ```Gradle Kotlin DSL
 repositories { 
-    maven("https://repo.auroramc.gg/repository/maven-public/")
+    maven("https://repo.auroramc.gg/releases/")
 }
 
 dependencies { 
