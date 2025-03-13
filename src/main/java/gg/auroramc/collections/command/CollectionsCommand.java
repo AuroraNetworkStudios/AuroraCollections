@@ -67,11 +67,19 @@ public class CollectionsCommand extends BaseCommand {
         if (collectionId.equals("none")) {
             if (!plugin.getCollectionManager().hasCategory(category)) return;
             if (plugin.getCollectionManager().getCategory(category).isLevelingEnabled()) {
+                if (!plugin.getCollectionManager().getCategory(category).hasPermission(sender)) {
+                    Chat.sendMessage(sender, plugin.getConfigManager().getMessageConfig().getNoPermission());
+                    return;
+                }
                 new CategoryRewardsMenu(sender, plugin, category).open();
             }
         } else {
             var collection = plugin.getCollectionManager().getCollection(category, collectionId);
             if (collection == null) return;
+            if (!collection.hasPermission(sender)) {
+                Chat.sendMessage(sender, plugin.getConfigManager().getMessageConfig().getNoPermission());
+                return;
+            }
 
             new ProgressionMenu(sender, plugin, collection).open();
         }

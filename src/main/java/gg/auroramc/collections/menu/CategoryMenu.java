@@ -45,15 +45,20 @@ public class CategoryMenu {
             var category = item.getKey();
             var placeholders = plugin.getCollectionManager().getCategoryPlaceholders(category, player);
             placeholders.addAll(globalPlaceholders);
+            var builtItem = ItemBuilder.of(item.getValue()).placeholder(placeholders).build(player);
 
-            menu.addItem(ItemBuilder.of(item.getValue()).placeholder(placeholders).build(player),
-                    (e) -> {
-                        if (e.isRightClick() && plugin.getCollectionManager().getCategory(category).isLevelingEnabled()) {
-                            new CategoryRewardsMenu(player, plugin, category).open();
-                        } else {
-                            new CollectionsMenu(player, plugin, category).open();
-                        }
-                    });
+            if (plugin.getCollectionManager().getCategory(category).hasPermission(player)) {
+                menu.addItem(builtItem);
+            } else {
+                menu.addItem(builtItem, (e) -> {
+                    if (e.isRightClick() && plugin.getCollectionManager().getCategory(category).isLevelingEnabled()) {
+                        new CategoryRewardsMenu(player, plugin, category).open();
+                    } else {
+                        new CollectionsMenu(player, plugin, category).open();
+                    }
+                });
+            }
+
         }
 
         return menu;

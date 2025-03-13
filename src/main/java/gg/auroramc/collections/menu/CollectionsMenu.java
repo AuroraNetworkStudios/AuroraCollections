@@ -95,6 +95,7 @@ public class CollectionsMenu {
                 menu.addItem(builder.build(player));
             } else {
                 menu.addItem(builder.build(player), (e) -> {
+                    if (!collection.hasPermission(player)) return;
                     new ProgressionMenu(player, plugin, collection).open();
                 });
             }
