@@ -27,7 +27,7 @@ public class HookManager {
                     instance.hookAtStartUp(plugin);
                     hooks.put(hook.getClazz(), instance);
                 }
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 AuroraCollections.logger().warning("Failed to hook " + hook.getPlugin() + ": " + e.getMessage());
             }
         }

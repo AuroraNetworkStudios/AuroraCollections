@@ -51,6 +51,7 @@ dependencies {
     compileOnly("com.sk89q.worldguard:worldguard-bukkit:7.0.7")
     compileOnly("io.lumine:MythicLib-dist:1.7.1-SNAPSHOT")
     compileOnly("net.Indyuce:MMOItems-API:6.10-SNAPSHOT")
+    compileOnly("net.Indyuce:MMOCore-API:1.13.1-SNAPSHOT")
     compileOnly("io.th0rgal:oraxen:2.0-SNAPSHOT")
     compileOnly("com.sarry20:TopMinion:2.4.3")
     compileOnly("org.me.leo_s:BeeMinions:3.0.6-BETA")

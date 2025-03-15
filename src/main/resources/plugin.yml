@@ -17,6 +17,7 @@ softdepend:
   - TopMinion
   - BeeMinions
   - Nexo
+  - MMOCore
 
 website: https://auroramc.gg
 
