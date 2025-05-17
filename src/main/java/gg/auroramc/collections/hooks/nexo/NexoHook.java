@@ -1,6 +1,10 @@
 package gg.auroramc.collections.hooks.nexo;
 
 import com.nexomc.nexo.api.events.custom_block.NexoCustomBlockDropLootEvent;
+import com.nexomc.nexo.api.events.custom_block.chorusblock.NexoChorusBlockDropLootEvent;
+import com.nexomc.nexo.api.events.custom_block.noteblock.NexoNoteBlockBreakEvent;
+import com.nexomc.nexo.api.events.custom_block.noteblock.NexoNoteBlockDropLootEvent;
+import com.nexomc.nexo.api.events.custom_block.stringblock.NexoStringBlockDropLootEvent;
 import com.nexomc.nexo.utils.drops.DroppedLoot;
 import gg.auroramc.aurora.api.AuroraAPI;
 import gg.auroramc.collections.AuroraCollections;
@@ -19,6 +23,7 @@ public class NexoHook implements Hook, Listener {
     @Override
     public void hook(AuroraCollections plugin) {
         this.plugin = plugin;
+        AuroraCollections.logger().info("Hooked into Nexo for custom block drops (note/string block, chorus fruit).");
     }
 
     private boolean invalid(Player player, Block block) {
@@ -26,7 +31,19 @@ public class NexoHook implements Hook, Listener {
     }
 
     @EventHandler
-    public void onCustomBlockDrop(NexoCustomBlockDropLootEvent e) {
+    public void onCustomBlockDrop(NexoStringBlockDropLootEvent e) {
+        if (invalid(e.getPlayer(), e.getBlock())) return;
+        handleProgression(e.getPlayer(), e.getLoots());
+    }
+
+    @EventHandler
+    public void onCustomBlockDrop(NexoChorusBlockDropLootEvent e) {
+        if (invalid(e.getPlayer(), e.getBlock())) return;
+        handleProgression(e.getPlayer(), e.getLoots());
+    }
+
+    @EventHandler
+    public void onCustomBlockDrop(NexoNoteBlockDropLootEvent e) {
         if (invalid(e.getPlayer(), e.getBlock())) return;
         handleProgression(e.getPlayer(), e.getLoots());
     }
