@@ -11,6 +11,7 @@ import gg.auroramc.collections.hooks.mmolib.MMOLibHook;
 import gg.auroramc.collections.hooks.mythic.MythicHook;
 import gg.auroramc.collections.hooks.nexo.NexoHook;
 import gg.auroramc.collections.hooks.oraxen.OraxenHook;
+import gg.auroramc.collections.hooks.pyrofishing.PyroFishingHook;
 import gg.auroramc.collections.hooks.topminions.TopMinionsHook;
 import gg.auroramc.collections.hooks.worldguard.WorldGuardHook;
 import lombok.Getter;
@@ -29,7 +30,8 @@ public enum Hooks {
     MMOLIB(MMOLibHook.class, "MythicLib"),
     TOP_MINIONS(TopMinionsHook.class, "TopMinion"),
     BEE_MINIONS(BeeMinionsHook.class, "BeeMinions"),
-    MMOCORE(MMOCoreHook.class, "MMOCore");
+    MMOCORE(MMOCoreHook.class, "MMOCore"),
+    PYRO_FISHING(PyroFishingHook.class, "PyroFishingPro");
 
     private final Class<? extends Hook> clazz;
     private final String plugin;

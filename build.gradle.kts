@@ -20,7 +20,7 @@ plugins {
 }
 
 group = "gg.auroramc"
-version = "1.5.4"
+version = "1.5.5"
 
 java.sourceCompatibility = JavaVersion.VERSION_21
 java.targetCompatibility = JavaVersion.VERSION_21
@@ -56,6 +56,7 @@ dependencies {
     compileOnly("com.sarry20:TopMinion:2.4.3")
     compileOnly("org.me.leo_s:BeeMinions:3.0.6-BETA")
     compileOnly("com.nexomc:nexo:1.5.0")
+    compileOnly("me.arsmagica:PyroFishingPro:4.9.26")
 
     implementation("co.aikar:acf-paper:0.5.1-SNAPSHOT")
     implementation("org.bstats:bstats-bukkit:3.0.2")
