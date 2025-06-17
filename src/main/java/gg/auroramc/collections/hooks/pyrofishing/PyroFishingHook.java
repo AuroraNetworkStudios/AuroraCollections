@@ -22,7 +22,7 @@ public class PyroFishingHook implements Hook, Listener {
     public void onFish(PyroFishCatchEvent event) {
         plugin.getCollectionManager().progressCollections(
                 event.getPlayer(),
-                new TypeId("pyrofishing:" + event.getTier(), String.valueOf(event.getFishNumber())),
+                new TypeId("pyrofishing", event.getTier() + ":" + event.getFishNumber()),
                 event.getItemStack().getAmount(),
                 Trigger.FISH
         );
