@@ -3,6 +3,7 @@ package gg.auroramc.collections.hooks;
 import gg.auroramc.collections.hooks.auraskills.AuraSkillsHook;
 import gg.auroramc.collections.hooks.auroralevels.AuroraLevelsHook;
 import gg.auroramc.collections.hooks.beeminions.BeeMinionsHook;
+import gg.auroramc.collections.hooks.beeminions.BeeMinionsReworkHook;
 import gg.auroramc.collections.hooks.customfishing.CustomFishingHook;
 import gg.auroramc.collections.hooks.luckperms.LuckPermsHook;
 import gg.auroramc.collections.hooks.mmocore.MMOCoreHook;
@@ -30,6 +31,7 @@ public enum Hooks {
     MMOLIB(MMOLibHook.class, "MythicLib"),
     TOP_MINIONS(TopMinionsHook.class, "TopMinion"),
     BEE_MINIONS(BeeMinionsHook.class, "BeeMinions"),
+    BEE_MINIONS_REWORK(BeeMinionsReworkHook.class, "BeeMinionsRework"),
     MMOCORE(MMOCoreHook.class, "MMOCore"),
     PYRO_FISHING(PyroFishingHook.class, "PyroFishingPro");
 

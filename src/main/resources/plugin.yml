@@ -16,6 +16,7 @@ softdepend:
   - LuckPerms
   - TopMinion
   - BeeMinions
+  - BeeMinionsRework
   - Nexo
   - MMOCore
   - PyroFishingPro
