@@ -17,10 +17,11 @@ plugins {
     id("java")
     id("com.gradleup.shadow") version "8.3.3"
     id("maven-publish")
+    id("xyz.jpenilla.run-paper") version "2.3.0"
 }
 
 group = "gg.auroramc"
-version = "1.5.6"
+version = "1.5.7"
 
 java.sourceCompatibility = JavaVersion.VERSION_21
 java.targetCompatibility = JavaVersion.VERSION_21
@@ -42,7 +43,7 @@ repositories {
 
 dependencies {
     compileOnly("io.papermc.paper:paper-api:1.21.3-R0.1-SNAPSHOT")
-    compileOnly("gg.auroramc:Aurora:2.1.6")
+    compileOnly("gg.auroramc:Aurora:2.4.0")
     compileOnly("gg.auroramc:AuroraLevels:1.6.2")
     compileOnly("net.luckperms:api:5.4")
     compileOnly("dev.aurelium:auraskills-api-bukkit:2.0.7")
@@ -95,6 +96,13 @@ tasks.processResources {
 tasks {
     build {
         dependsOn(shadowJar)
+    }
+    runServer {
+        downloadPlugins {
+            modrinth("AuroraLib", "2.4.0")
+            hangar("PlaceholderAPI", "2.11.6")
+        }
+        minecraftVersion("1.21.10")
     }
 }
 
