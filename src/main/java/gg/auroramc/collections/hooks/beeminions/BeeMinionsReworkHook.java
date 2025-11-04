@@ -3,7 +3,7 @@ package gg.auroramc.collections.hooks.beeminions;
 import gg.auroramc.collections.AuroraCollections;
 import gg.auroramc.collections.collection.Trigger;
 import gg.auroramc.collections.hooks.Hook;
-import me.leo_s.beeminions.api.events.MinionItemsRemove;
+import me.leo_s.beeminions.api.events.MinionItemsRemoveEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -19,8 +19,8 @@ public class BeeMinionsReworkHook implements Hook, Listener {
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void onItemTakeOut(MinionItemsRemove event) {
-        if (event.getResult() != MinionItemsRemove.ResultState.SUCESS) return;
+    public void onItemTakeOut(MinionItemsRemoveEvent event) {
+        if (event.getResult() != MinionItemsRemoveEvent.ResultState.SUCESS) return;
         if (event.getItems() == null) return;
 
         var player = Bukkit.getPlayer(event.getMinion().getOwner());
