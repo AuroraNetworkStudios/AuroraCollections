@@ -16,6 +16,7 @@ import gg.auroramc.aurora.api.reward.RewardFactory;
 import gg.auroramc.aurora.api.util.NamespacedId;
 import gg.auroramc.collections.AuroraCollections;
 import gg.auroramc.collections.api.event.CollectionLevelUpEvent;
+import gg.auroramc.collections.config.CollectionConfig;
 import gg.auroramc.collections.hooks.HookManager;
 import gg.auroramc.collections.hooks.worldguard.WorldGuardHook;
 import gg.auroramc.collections.listener.BlockBreakListener;
@@ -40,6 +41,10 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 public class CollectionManager implements Listener {
+    private static final Comparator<Map.Entry<String, CollectionConfig>> COLLECTION_ID_COMPARATOR =
+            Comparator.<Map.Entry<String, CollectionConfig>>comparingInt(entry -> extractLeadingNumber(entry.getKey()))
+                    .thenComparing(Map.Entry::getKey, String.CASE_INSENSITIVE_ORDER);
+
     private final AuroraCollections plugin;
     private final Map<String, Map<String, Collection>> categories = Maps.newConcurrentMap();
     @Getter
@@ -160,7 +165,7 @@ public class CollectionManager implements Listener {
         var config = plugin.getConfigManager().getCollections();
         for (var category : config.entrySet()) {
             var categoryMap = Maps.<String, Collection>newLinkedHashMap();
-            for (var collection : category.getValue().entrySet().stream().sorted(Map.Entry.comparingByKey()).toList()) {
+            for (var collection : category.getValue().entrySet().stream().sorted(COLLECTION_ID_COMPARATOR).toList()) {
                 categoryMap.put(collection.getKey(), new Collection(plugin, collection.getValue(), category.getKey(), collection.getKey()));
             }
             categories.put(category.getKey(), categoryMap);
@@ -171,6 +176,23 @@ public class CollectionManager implements Listener {
             if (!categories.containsKey(entry.getKey())) {
                 categories.put(entry.getKey(), Maps.newConcurrentMap());
             }
+        }
+    }
+
+    private static int extractLeadingNumber(String id) {
+        int end = 0;
+        while (end < id.length() && Character.isDigit(id.charAt(end))) {
+            end++;
+        }
+
+        if (end == 0) {
+            return Integer.MAX_VALUE;
+        }
+
+        try {
+            return Integer.parseInt(id.substring(0, end));
+        } catch (NumberFormatException ignored) {
+            return Integer.MAX_VALUE;
         }
     }
 
