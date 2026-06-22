@@ -237,7 +237,7 @@ public class CollectionManager implements Listener {
             }
 
             if (lvlUpMsg.getOpenMenuWhenClicked()) {
-                text.clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND,
+                text.clickEvent(ClickEvent.runCommand(
                         "/" + mainConfig.getCommandAliases().getCollections().get(0) + " " +
                                 mainConfig.getCommandAliases().getProgression().get(0) + " " +
                                 category.getId()));

@@ -175,7 +175,7 @@ public class Collection {
             }
 
             if (message.getOpenMenuWhenClicked()) {
-                text.clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND,
+                text.clickEvent(ClickEvent.runCommand(
                         "/" + plugin.getConfigManager().getConfig().getCommandAliases().getCollections().getFirst() + " " +
                                 plugin.getConfigManager().getConfig().getCommandAliases().getProgression().getFirst() + " " +
                                 category + " " + id));
@@ -295,7 +295,7 @@ public class Collection {
 
             if (mainConfig.getLevelUpMessage().getEnabled()) {
                 if (mainConfig.getLevelUpMessage().getOpenMenuWhenClicked()) {
-                    text.clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND,
+                    text.clickEvent(ClickEvent.runCommand(
                             "/" + mainConfig.getCommandAliases().getCollections().get(0) + " " +
                                     mainConfig.getCommandAliases().getProgression().get(0) + " " +
                                     category + " " + id));

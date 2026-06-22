@@ -15,23 +15,28 @@ fun loadProperties(filename: String): Properties {
 
 plugins {
     id("java")
-    id("com.gradleup.shadow") version "8.3.3"
+    id("com.gradleup.shadow") version "9.4.2"
     id("maven-publish")
-    id("xyz.jpenilla.run-paper") version "2.3.0"
+    id("xyz.jpenilla.run-paper") version "3.0.2"
 }
 
 group = "gg.auroramc"
-version = "1.5.8"
+version = "1.6.0-SNAPSHOT"
 
-java.sourceCompatibility = JavaVersion.VERSION_21
-java.targetCompatibility = JavaVersion.VERSION_21
-
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(25))
+    }
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
+}
 
 repositories {
     mavenCentral()
     mavenLocal()
     maven("https://repo.papermc.io/repository/maven-public/")
     maven("https://repo.auroramc.gg/releases/")
+    maven("https://repo.auroramc.gg/snapshots/")
     maven("https://repo.aikar.co/content/groups/aikar/")
     maven("https://mvn.lumine.io/repository/maven-public/")
     maven("https://maven.enginehub.org/repo/")
@@ -42,8 +47,8 @@ repositories {
 }
 
 dependencies {
-    compileOnly("io.papermc.paper:paper-api:1.21.3-R0.1-SNAPSHOT")
-    compileOnly("gg.auroramc:Aurora:2.4.0")
+    compileOnly("io.papermc.paper:paper-api:26.2.build.31-alpha")
+    compileOnly("gg.auroramc:Aurora:2.6.0-SNAPSHOT")
     compileOnly("gg.auroramc:AuroraLevels:1.6.2")
     compileOnly("net.luckperms:api:5.4")
     compileOnly("dev.aurelium:auraskills-api-bukkit:2.0.7")
@@ -63,8 +68,8 @@ dependencies {
     implementation("co.aikar:acf-paper:0.5.1-SNAPSHOT")
     implementation("org.bstats:bstats-bukkit:3.0.2")
 
-    compileOnly("org.projectlombok:lombok:1.18.32")
-    annotationProcessor("org.projectlombok:lombok:1.18.32")
+    compileOnly("org.projectlombok:lombok:1.18.46")
+    annotationProcessor("org.projectlombok:lombok:1.18.46")
 }
 
 
@@ -98,11 +103,7 @@ tasks {
         dependsOn(shadowJar)
     }
     runServer {
-        downloadPlugins {
-            modrinth("AuroraLib", "2.4.0")
-            hangar("PlaceholderAPI", "2.11.6")
-        }
-        minecraftVersion("1.21.10")
+        minecraftVersion("26.2")
     }
 }
 
