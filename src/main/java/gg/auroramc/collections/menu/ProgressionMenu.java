@@ -66,13 +66,17 @@ public class ProgressionMenu {
         });
 
         var template = config.getCollectionMenuTemplate();
-        var iconConfig = template.getEnabled() ? template.getItem().merge(collection.getConfig().getMenuItem()) : collection.getConfig().getMenuItem();
+        Boolean categoryIcon = config.getCategoryIcon();
 
-        var iconBuilder = ItemBuilder.of(iconConfig)
-                .placeholder(collection.getPlaceholders(player, collection.getPlayerLevel(player) + 1))
-                .defaultSlot(4);
+        if (categoryIcon) {
+            var iconConfig = template.getEnabled() ? template.getItem().merge(collection.getConfig().getMenuItem()) : collection.getConfig().getMenuItem();
 
-        menu.addItem(iconBuilder.build(player));
+            var iconBuilder = ItemBuilder.of(iconConfig)
+                    .placeholder(collection.getPlaceholders(player, collection.getPlayerLevel(player) + 1))
+                    .defaultSlot(4);
+
+            menu.addItem(iconBuilder.build(player));
+        }
 
         var requirements = getPage(page, config.getDisplayArea().size());
 

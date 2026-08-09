@@ -10,6 +10,8 @@ allow-item-amounts: true
 # NOTE: you can also use just {level_roman}
 force-roman-numerals: false
 
+category-icon: true
+
 display-area: [
 #  10, 11, 12, 13, 14, 15, 16,
   19, 20, 21, 22, 23, 24, 25,
