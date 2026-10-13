@@ -7,7 +7,7 @@ import gg.auroramc.collections.AuroraCollections;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -19,13 +19,13 @@ public class CommandCorrector implements RewardCorrector {
         this.plugin = plugin;
     }
 
-    private record CommandPair(CommandReward reward, List<Placeholder<?>> placeholders) {
+    private record CommandPair(CommandReward reward, int level, List<Placeholder<?>> placeholders) {
     }
 
     @Override
     public void correctRewards(Player player) {
         var manager = plugin.getCollectionManager();
-        final var rewards = new HashMap<Integer, CommandPair>();
+        final var rewards = new ArrayList<CommandPair>();
 
         for (var collection : manager.getAllCollections()) {
             var level = collection.getPlayerLevel(player);
@@ -37,7 +37,7 @@ public class CommandCorrector implements RewardCorrector {
                 for (var reward : matcher.computeRewards(i)) {
                     if (reward instanceof CommandReward commandReward) {
                         if (commandReward.shouldBeCorrected(player, i)) {
-                            rewards.put(i, new CommandPair(commandReward, collection.getPlaceholders(player, i)));
+                            rewards.add(new CommandPair(commandReward, i, collection.getPlaceholders(player, i)));
                         }
                     }
                 }
@@ -47,9 +47,9 @@ public class CommandCorrector implements RewardCorrector {
         if (rewards.isEmpty()) return;
 
         Bukkit.getGlobalRegionScheduler().run(plugin, (task) -> {
-            rewards.forEach((lvl, reward) -> {
+            rewards.forEach((reward) -> {
                 if (!player.isOnline()) return;
-                reward.reward().execute(player, lvl, reward.placeholders());
+                reward.reward().execute(player, reward.level(), reward.placeholders());
             });
             AuroraCollections.logger().debug("Corrected %d command rewards for player %s".formatted(rewards.size(), player.getName()));
         });

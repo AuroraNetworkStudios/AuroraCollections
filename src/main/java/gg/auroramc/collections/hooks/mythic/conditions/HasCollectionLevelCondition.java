@@ -2,7 +2,6 @@ package gg.auroramc.collections.hooks.mythic.conditions;
 
 import gg.auroramc.aurora.api.AuroraAPI;
 import gg.auroramc.collections.AuroraCollections;
-import gg.auroramc.collections.api.data.CollectionData;
 import io.lumine.mythic.api.adapters.AbstractEntity;
 import io.lumine.mythic.api.skills.SkillCaster;
 import io.lumine.mythic.api.skills.conditions.ICasterCondition;
@@ -58,9 +57,9 @@ public class HasCollectionLevelCondition implements IEntityCondition, ICasterCon
         var user = AuroraAPI.getUserManager().getUser(player);
         if (!user.isLoaded()) return false;
 
-        var count = user.getData(CollectionData.class).getCollectionCount(category, collection);
-        if(count == null) return false;
+        var collection = plugin.getCollectionManager().getCollection(category, this.collection);
+        if (collection == null) return false;
 
-        return count >= level;
+        return collection.getPlayerLevel(player) >= level;
     }
 }
