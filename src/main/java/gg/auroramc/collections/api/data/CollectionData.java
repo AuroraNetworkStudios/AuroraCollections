@@ -53,15 +53,16 @@ public class CollectionData extends UserDataHolder {
     }
 
     public void incrementCollectionCount(String category, String collection, int amount, int maxRequirement) {
-        dirty.set(true);
         cache.computeIfAbsent(category, k -> Maps.newConcurrentMap())
                 .compute(collection, (k, v) -> v == null ? Math.min(amount, maxRequirement) : Math.min(v + amount, maxRequirement));
+        // After the change, see UserDataHolder#dirty
+        dirty.set(true);
     }
 
     public void incrementCollectionCount(String category, String collection, int amount) {
-        dirty.set(true);
         cache.computeIfAbsent(category, k -> Maps.newConcurrentMap())
                 .compute(collection, (k, v) -> v == null ? amount : v + amount);
+        dirty.set(true);
     }
 
     public void setDirty() {
