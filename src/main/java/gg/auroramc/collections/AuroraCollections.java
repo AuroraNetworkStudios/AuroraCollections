@@ -34,8 +34,15 @@ public final class AuroraCollections extends JavaPlugin {
         return l;
     }
 
+    // Set when Aurora is too old for this version, nothing else is done then
+    private boolean incompatible = false;
+
     @Override
     public void onLoad() {
+        if (!auroraIsCompatible()) {
+            incompatible = true;
+            return;
+        }
         configManager = new ConfigManager(this);
         l = AuroraAPI.createLogger("AuroraCollections", () -> configManager.getConfig().getDebug());
         configManager.reload();
@@ -64,6 +71,10 @@ public final class AuroraCollections extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        if (incompatible) {
+            getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
         itemManager = AuroraAPI.getItemManager();
 
         AuroraAPI.getUserManager().registerUserDataHolder(CollectionData.class);
@@ -102,6 +113,22 @@ public final class AuroraCollections extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        commandManager.unregisterCommands();
+        if (commandManager != null) commandManager.unregisterCommands();
+    }
+
+    // Built for Aurora 3: with an older one, say so clearly instead of failing somewhere deep inside. Only Bukkit is
+    // used here, an older Aurora doesn't have what this version needs.
+    private boolean auroraIsCompatible() {
+        var aurora = Bukkit.getPluginManager().getPlugin("Aurora");
+        var version = aurora == null ? "none" : aurora.getPluginMeta().getVersion();
+        int major;
+        try {
+            major = Integer.parseInt(version.split("[.-]")[0]);
+        } catch (NumberFormatException e) {
+            major = 0;
+        }
+        if (major >= 3) return true;
+        getLogger().severe(getName() + " " + getPluginMeta().getVersion() + " needs Aurora 3.0 or newer, but Aurora " + version + " is installed. Update Aurora.");
+        return false;
     }
 }

@@ -4,15 +4,12 @@ import gg.auroramc.aurora.api.message.Placeholder;
 import gg.auroramc.aurora.api.reward.CommandReward;
 import gg.auroramc.aurora.api.reward.RewardCorrector;
 import gg.auroramc.collections.AuroraCollections;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 public class CommandCorrector implements RewardCorrector {
-
     private final AuroraCollections plugin;
 
     public CommandCorrector(AuroraCollections plugin) {
@@ -46,12 +43,13 @@ public class CommandCorrector implements RewardCorrector {
 
         if (rewards.isEmpty()) return;
 
-        Bukkit.getGlobalRegionScheduler().run(plugin, (task) -> {
+        // On the player's own thread, the actions touch the player (on Folia only that thread may)
+        player.getScheduler().run(plugin, (task) -> {
             rewards.forEach((reward) -> {
                 if (!player.isOnline()) return;
                 reward.reward().execute(player, reward.level(), reward.placeholders());
             });
             AuroraCollections.logger().debug("Corrected %d command rewards for player %s".formatted(rewards.size(), player.getName()));
-        });
+        }, null);
     }
 }
