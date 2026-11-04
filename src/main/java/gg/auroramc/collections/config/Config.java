@@ -1,19 +1,16 @@
 package gg.auroramc.collections.config;
 
-import gg.auroramc.aurora.api.config.AuroraConfig;
 import gg.auroramc.aurora.api.config.premade.IntervalMatcherConfig;
-import gg.auroramc.collections.AuroraCollections;
 import lombok.Getter;
 import lombok.ToString;
 import org.bukkit.configuration.file.YamlConfiguration;
 
-import java.io.File;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
 @Getter
-public class Config extends AuroraConfig {
+public class Config {
     private Boolean debug = false;
     private String language = "en";
     private CommandAliasConfig commandAliases;
@@ -27,10 +24,6 @@ public class Config extends AuroraConfig {
     private LeaderboardConfig leaderboard;
     private Boolean preventCreativeMode = false;
     private Boolean limitProgressToMaxRequirement = false;
-
-    public Config(AuroraCollections plugin) {
-        super(getFile(plugin));
-    }
 
     @Getter
     public static final class LeaderboardConfig {
@@ -66,18 +59,8 @@ public class Config extends AuroraConfig {
         private Float pitch;
     }
 
-    public static File getFile(AuroraCollections plugin) {
-        return new File(plugin.getDataFolder(), "config.yml");
-    }
-
-    public static void saveDefault(AuroraCollections plugin) {
-        if (!getFile(plugin).exists()) {
-            plugin.saveResource("config.yml", false);
-        }
-    }
-
-    @Override
-    protected List<Consumer<YamlConfiguration>> getMigrationSteps() {
+    // Steps by config-version, only ever appended, each sets config-version itself
+    public static List<Consumer<YamlConfiguration>> migrations() {
         return List.of(
                 (yaml) -> {
                     yaml.set("config-version", null);

@@ -15,14 +15,12 @@ import java.util.Arrays;
 import java.util.List;
 
 public class CustomFishingHook implements Hook {
-
     @Override
     public void hook(AuroraCollections plugin) {
         Bukkit.getPluginManager().registerEvents(new CustomFishingListener(plugin), plugin);
         if (!plugin.getConfigManager().getMetaConfig().isCustomFishingCollectionsSaved()) {
             generateDefaultCollections(plugin);
-            plugin.getConfigManager().getMetaConfig().setCustomFishingCollectionsSaved(true);
-            plugin.getConfigManager().getMetaConfig().saveChanges();
+            plugin.getConfigManager().setCustomFishingCollectionsSaved();
             AuroraCollections.logger().info("Generated default fishing collections for CustomFishing");
         }
         AuroraCollections.logger().info("Hooked into CustomFishing for fishing collection with namespace 'customfishing'");
@@ -50,8 +48,7 @@ public class CustomFishingHook implements Hook {
             try {
                 file.createNewFile();
                 yaml.save(file);
-                var config = new CollectionConfig(file);
-                config.load();
+                var config = CollectionConfig.load(file);
                 plugin.getConfigManager().getCollections().get("fishing").put("0005_cf_" + loot.id(), config);
             } catch (IOException e) {
                 throw new RuntimeException(e);

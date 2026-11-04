@@ -1,18 +1,15 @@
 package gg.auroramc.collections.config.menu;
 
-import gg.auroramc.aurora.api.config.AuroraConfig;
 import gg.auroramc.aurora.api.config.premade.ItemConfig;
-import gg.auroramc.collections.AuroraCollections;
 import lombok.Getter;
 import org.bukkit.configuration.file.YamlConfiguration;
 
-import java.io.File;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
 @Getter
-public class CategoryRewardsMenuConfig extends AuroraConfig {
+public class CategoryRewardsMenuConfig {
     private String title;
     private ProgressBar progressBar;
     private Map<String, ItemConfig> customItems;
@@ -20,11 +17,6 @@ public class CategoryRewardsMenuConfig extends AuroraConfig {
     private List<Integer> displayArea;
     private Items items;
     private Integer rows = 6;
-
-    public CategoryRewardsMenuConfig(AuroraCollections plugin) {
-        super(getFile(plugin));
-    }
-
 
     @Getter
     public static final class DisplayComponent {
@@ -57,18 +49,8 @@ public class CategoryRewardsMenuConfig extends AuroraConfig {
         private String unfilledCharacter;
     }
 
-    public static File getFile(AuroraCollections plugin) {
-        return new File(plugin.getDataFolder() + "/menus", "category_rewards.yml");
-    }
-
-    public static void saveDefault(AuroraCollections plugin) {
-        if (!getFile(plugin).exists()) {
-            plugin.saveResource("menus/category_rewards.yml", false);
-        }
-    }
-
-    @Override
-    protected List<Consumer<YamlConfiguration>> getMigrationSteps() {
+    // Steps by config-version, only ever appended, each sets config-version itself
+    public static List<Consumer<YamlConfiguration>> migrations() {
         return List.of(
                 (yaml) -> {
                     yaml.set("config-version", null);

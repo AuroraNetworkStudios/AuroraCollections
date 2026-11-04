@@ -1,20 +1,17 @@
 package gg.auroramc.collections.config;
 
-import gg.auroramc.aurora.api.config.AuroraConfig;
 import gg.auroramc.aurora.api.config.premade.ItemConfig;
-import gg.auroramc.collections.AuroraCollections;
 import lombok.Getter;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
 @Getter
-public class CategoriesConfig extends AuroraConfig {
+public class CategoriesConfig {
     private Map<String, CategoryConfig> categories;
 
     @Getter
@@ -31,22 +28,8 @@ public class CategoriesConfig extends AuroraConfig {
         private ConfigurationSection rewards;
     }
 
-    public CategoriesConfig(AuroraCollections plugin) {
-        super(getFile(plugin));
-    }
-
-    public static File getFile(AuroraCollections plugin) {
-        return new File(plugin.getDataFolder(), "categories.yml");
-    }
-
-    public static void saveDefault(AuroraCollections plugin) {
-        if (!getFile(plugin).exists()) {
-            plugin.saveResource("categories.yml", false);
-        }
-    }
-
-    @Override
-    protected List<Consumer<YamlConfiguration>> getMigrationSteps() {
+    // Steps by config-version, only ever appended, each sets config-version itself
+    public static List<Consumer<YamlConfiguration>> migrations() {
         return List.of(
                 (yaml) -> {
                     var current = new HashMap<String, String>();

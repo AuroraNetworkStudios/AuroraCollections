@@ -1,6 +1,7 @@
 package gg.auroramc.collections.config;
 
 import com.google.common.collect.Maps;
+import gg.auroramc.aurora.api.config.ConfigFile;
 import gg.auroramc.collections.AuroraCollections;
 import gg.auroramc.collections.config.menu.CategoriesMenuConfig;
 import gg.auroramc.collections.config.menu.CategoryRewardsMenuConfig;
@@ -15,23 +16,26 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.jar.JarFile;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
-
-@Getter
 public class ConfigManager {
     private final AuroraCollections plugin;
-    private Config config;
-    private MetaConfig metaConfig;
-    private MessageConfig messageConfig;
-    private CategoriesConfig categoriesConfig;
-    private CategoriesMenuConfig categoriesMenuConfig;
-    private CollectionListMenuConfig collectionListMenuConfig;
-    private CollectionMenuConfig collectionMenuConfig;
-    private CategoryRewardsMenuConfig categoryRewardsMenuConfig;
+    private ConfigFile<Config> config;
+    private ConfigFile<MetaConfig> metaConfig;
+    // By language: only the configured language is used, a file stays loaded so a reload can keep it if it's broken
+    private final Map<String, ConfigFile<MessageConfig>> messageConfigs = new ConcurrentHashMap<>();
+    private volatile String language;
+    private ConfigFile<CategoriesConfig> categoriesConfig;
+    private ConfigFile<CategoriesMenuConfig> categoriesMenuConfig;
+    private ConfigFile<CollectionListMenuConfig> collectionListMenuConfig;
+    private ConfigFile<CollectionMenuConfig> collectionMenuConfig;
+    private ConfigFile<CategoryRewardsMenuConfig> categoryRewardsMenuConfig;
+    @Getter
     private final Map<String, Map<String, CollectionConfig>> collections = Maps.newConcurrentMap();
 
     public ConfigManager(AuroraCollections plugin) {
@@ -40,45 +44,94 @@ public class ConfigManager {
 
     @SneakyThrows
     public void reload() {
-        boolean saveDefaultCollections = !Config.getFile(plugin).exists();
-
-        Config.saveDefault(plugin);
-        config = new Config(plugin);
-        config.load();
-
-        MetaConfig.saveDefault(plugin);
-        metaConfig = new MetaConfig(plugin);
-        metaConfig.load();
-
-        MessageConfig.saveDefault(plugin, config.getLanguage());
-        messageConfig = new MessageConfig(plugin, config.getLanguage());
-        messageConfig.load();
-
-        CategoriesConfig.saveDefault(plugin);
-        categoriesConfig = new CategoriesConfig(plugin);
-        categoriesConfig.load();
-
-        CategoriesMenuConfig.saveDefault(plugin);
-        categoriesMenuConfig = new CategoriesMenuConfig(plugin);
-        categoriesMenuConfig.load();
-
-        CollectionListMenuConfig.saveDefault(plugin);
-        collectionListMenuConfig = new CollectionListMenuConfig(plugin);
-        collectionListMenuConfig.load();
-
-        CollectionMenuConfig.saveDefault(plugin);
-        collectionMenuConfig = new CollectionMenuConfig(plugin);
-        collectionMenuConfig.load();
-
-        CategoryRewardsMenuConfig.saveDefault(plugin);
-        categoryRewardsMenuConfig = new CategoryRewardsMenuConfig(plugin);
-        categoryRewardsMenuConfig.load();
-
-        if (saveDefaultCollections) {
-            this.saveDefaultCollections();
+        if (config == null) {
+            boolean saveDefaultCollections = !new File(plugin.getDataFolder(), "config.yml").exists();
+            config = ConfigFile.builder(plugin, "config.yml", Config.class).migrations(Config.migrations()).build();
+            metaConfig = ConfigFile.builder(plugin, "meta.yml", MetaConfig.class).build();
+            categoriesConfig = ConfigFile.builder(plugin, "categories.yml", CategoriesConfig.class).migrations(CategoriesConfig.migrations()).build();
+            categoriesMenuConfig = ConfigFile.builder(plugin, "menus/categories.yml", CategoriesMenuConfig.class).migrations(CategoriesMenuConfig.migrations()).build();
+            collectionListMenuConfig = ConfigFile.builder(plugin, "menus/collection_list.yml", CollectionListMenuConfig.class).migrations(CollectionListMenuConfig.migrations()).build();
+            collectionMenuConfig = ConfigFile.builder(plugin, "menus/collection.yml", CollectionMenuConfig.class).migrations(CollectionMenuConfig.migrations()).build();
+            categoryRewardsMenuConfig = ConfigFile.builder(plugin, "menus/category_rewards.yml", CategoryRewardsMenuConfig.class).migrations(CategoryRewardsMenuConfig.migrations()).build();
+            for (var file : List.of(config, metaConfig, categoriesConfig, categoriesMenuConfig, collectionListMenuConfig, collectionMenuConfig, categoryRewardsMenuConfig)) {
+                file.get();
+            }
+            loadMessages(false);
+            if (saveDefaultCollections) {
+                this.saveDefaultCollections();
+            }
+        } else {
+            for (var file : List.of(config, metaConfig, categoriesConfig, categoriesMenuConfig, collectionListMenuConfig, collectionMenuConfig, categoryRewardsMenuConfig)) {
+                file.reload();
+            }
+            loadMessages(true);
         }
 
         reloadCollections();
+    }
+
+    private void loadMessages(boolean reload) {
+        var language = getConfig().getLanguage();
+        var existing = messageConfigs.get(language);
+        if (existing != null) {
+            if (reload) existing.reload();
+        } else {
+            var name = "messages_" + language + ".yml";
+            if (!hasResource(name) && !new File(plugin.getDataFolder(), name).exists()) {
+                AuroraCollections.logger().warning("Internal message file for language: " + language + " not found! Creating a new one from english...");
+            }
+            messageConfigs.put(language, ConfigFile.builder(plugin, name, MessageConfig.class)
+                    .bundled(hasResource(name) ? name : "messages_en.yml")
+                    .migrations(MessageConfig.migrations())
+                    .build());
+            messageConfigs.get(language).get();
+        }
+        this.language = language;
+    }
+
+    private boolean hasResource(String name) {
+        try (var in = plugin.getResource(name)) {
+            return in != null;
+        } catch (IOException e) {
+            return false;
+        }
+    }
+
+    public Config getConfig() {
+        return config.get();
+    }
+
+    public MetaConfig getMetaConfig() {
+        return metaConfig.get();
+    }
+
+    // Only that line of meta.yml changes
+    public void setCustomFishingCollectionsSaved() {
+        metaConfig.set("custom-fishing-collections-saved", true);
+    }
+
+    public MessageConfig getMessageConfig() {
+        return messageConfigs.get(language).get();
+    }
+
+    public CategoriesConfig getCategoriesConfig() {
+        return categoriesConfig.get();
+    }
+
+    public CategoriesMenuConfig getCategoriesMenuConfig() {
+        return categoriesMenuConfig.get();
+    }
+
+    public CollectionListMenuConfig getCollectionListMenuConfig() {
+        return collectionListMenuConfig.get();
+    }
+
+    public CollectionMenuConfig getCollectionMenuConfig() {
+        return collectionMenuConfig.get();
+    }
+
+    public CategoryRewardsMenuConfig getCategoryRewardsMenuConfig() {
+        return categoryRewardsMenuConfig.get();
     }
 
     private void reloadCollections() {
@@ -92,14 +145,14 @@ public class ConfigManager {
         for (var dir : collectionsDir.toFile().listFiles()) {
             if (!dir.isDirectory()) {
                 AuroraCollections.logger().warning("File " + dir.getName() + " is in the collections directory, but should be in a category subdirectory");
-            } else if (!categoriesConfig.getCategories().keySet().contains(dir.getName())) {
+            } else if (!getCategoriesConfig().getCategories().keySet().contains(dir.getName())) {
                 AuroraCollections.logger().warning("Category " + dir.getName() + " does not exist in categories.yml");
             }
         }
 
         var validIdPattern = Pattern.compile("^[a-zA-Z0-9_-]+$");
 
-        for (var dir : categoriesConfig.getCategories().keySet()) {
+        for (var dir : getCategoriesConfig().getCategories().keySet()) {
             Path categoryDir = collectionsDir.resolve(dir);
             if (!Files.exists(categoryDir)) {
                 continue;
@@ -128,8 +181,7 @@ public class ConfigManager {
                                         "Collection will be loaded, but you may experience issues.");
                             }
 
-                            CollectionConfig collectionConfig = new CollectionConfig(path.toFile());
-                            collectionConfig.load();
+                            CollectionConfig collectionConfig = CollectionConfig.load(path.toFile());
                             collections.computeIfAbsent(dir, k -> Maps.newConcurrentMap()).computeIfAbsent(fileName, k -> collectionConfig);
                         });
             } catch (IOException e) {
