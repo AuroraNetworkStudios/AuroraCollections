@@ -1,9 +1,9 @@
 package gg.auroramc.collections.hooks.oraxen;
 
 import gg.auroramc.aurora.api.AuroraAPI;
+import gg.auroramc.aurora.api.plugin.Hook;
 import gg.auroramc.collections.AuroraCollections;
 import gg.auroramc.collections.collection.Trigger;
-import gg.auroramc.collections.hooks.Hook;
 import io.th0rgal.oraxen.api.events.custom_block.noteblock.OraxenNoteBlockDropLootEvent;
 import io.th0rgal.oraxen.api.events.custom_block.stringblock.OraxenStringBlockDropLootEvent;
 import io.th0rgal.oraxen.utils.drops.DroppedLoot;
@@ -15,7 +15,7 @@ import org.bukkit.event.Listener;
 
 import java.util.List;
 
-public class Oraxen2Hook implements Hook, Listener {
+public class Oraxen2Hook implements Hook<AuroraCollections>, Listener {
     private AuroraCollections plugin;
 
     @Override

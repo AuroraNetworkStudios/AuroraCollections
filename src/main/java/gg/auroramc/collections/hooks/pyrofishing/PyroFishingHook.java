@@ -1,15 +1,15 @@
 package gg.auroramc.collections.hooks.pyrofishing;
 
 import gg.auroramc.aurora.api.item.TypeId;
+import gg.auroramc.aurora.api.plugin.Hook;
 import gg.auroramc.collections.AuroraCollections;
 import gg.auroramc.collections.collection.Trigger;
-import gg.auroramc.collections.hooks.Hook;
 import me.arsmagica.API.PyroFishCatchEvent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
-public class PyroFishingHook implements Hook, Listener {
+public class PyroFishingHook implements Hook<AuroraCollections>, Listener {
     private AuroraCollections plugin;
 
     @Override

@@ -3,12 +3,27 @@ package gg.auroramc.collections;
 import gg.auroramc.aurora.api.AuroraAPI;
 import gg.auroramc.aurora.api.AuroraLogger;
 import gg.auroramc.aurora.api.item.ItemManager;
+import gg.auroramc.aurora.api.plugin.Hooks;
 import gg.auroramc.collections.api.AuroraCollectionsProvider;
 import gg.auroramc.collections.api.data.CollectionData;
 import gg.auroramc.collections.collection.CollectionManager;
 import gg.auroramc.collections.command.CommandManager;
 import gg.auroramc.collections.config.ConfigManager;
-import gg.auroramc.collections.hooks.HookManager;
+import gg.auroramc.collections.hooks.auraskills.AuraSkillsHook;
+import gg.auroramc.collections.hooks.auroralevels.AuroraLevelsHook;
+import gg.auroramc.collections.hooks.beeminions.BeeMinionsHook;
+import gg.auroramc.collections.hooks.beeminions.BeeMinionsReworkHook;
+import gg.auroramc.collections.hooks.customfishing.CustomFishingHook;
+import gg.auroramc.collections.hooks.luckperms.LuckPermsHook;
+import gg.auroramc.collections.hooks.mmocore.MMOCoreHook;
+import gg.auroramc.collections.hooks.mmoitems.MMOItemsHook;
+import gg.auroramc.collections.hooks.mmolib.MMOLibHook;
+import gg.auroramc.collections.hooks.mythic.MythicHook;
+import gg.auroramc.collections.hooks.nexo.NexoHook;
+import gg.auroramc.collections.hooks.oraxen.OraxenHook;
+import gg.auroramc.collections.hooks.pyrofishing.PyroFishingHook;
+import gg.auroramc.collections.hooks.topminions.TopMinionsHook;
+import gg.auroramc.collections.hooks.worldguard.WorldGuardHook;
 import gg.auroramc.collections.placeholder.CollectionsPlaceholderHandler;
 import lombok.Getter;
 import org.bstats.bukkit.Metrics;
@@ -18,10 +33,12 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.util.concurrent.CompletableFuture;
 
 public final class AuroraCollections extends JavaPlugin {
-
     @Getter
     private ConfigManager configManager;
     private CommandManager commandManager;
+    // Created in onLoad, after checking that Aurora is new enough (an older one doesn't have Hooks)
+    @Getter
+    private Hooks<AuroraCollections> hooks;
     @Getter
     private CollectionManager collectionManager;
 
@@ -46,7 +63,23 @@ public final class AuroraCollections extends JavaPlugin {
         configManager = new ConfigManager(this);
         l = AuroraAPI.createLogger("AuroraCollections", () -> configManager.getConfig().getDebug());
         configManager.reload();
-        HookManager.loadHooks(this);
+        hooks = new Hooks<>(this)
+                .add(AuroraLevelsHook.class, "AuroraLevels")
+                .add(AuraSkillsHook.class, "AuraSkills")
+                .add(LuckPermsHook.class, "LuckPerms")
+                .add(CustomFishingHook.class, "CustomFishing")
+                .add(MMOItemsHook.class, "MMOItems")
+                .add(MythicHook.class, "MythicMobs")
+                .add(OraxenHook.class, "Oraxen")
+                .add(NexoHook.class, "Nexo")
+                .add(WorldGuardHook.class, "WorldGuard")
+                .add(MMOLibHook.class, "MythicLib")
+                .add(TopMinionsHook.class, "TopMinion")
+                .add(BeeMinionsHook.class, "BeeMinions")
+                .add(BeeMinionsReworkHook.class, "BeeMinionsRework")
+                .add(MMOCoreHook.class, "MMOCore")
+                .add(PyroFishingHook.class, "PyroFishingPro");
+        hooks.load();
 
         for (var entry : configManager.getCollections().entrySet()) {
             AuroraAPI.getLeaderboards().registerBoard(
@@ -85,7 +118,7 @@ public final class AuroraCollections extends JavaPlugin {
 
         collectionManager = new CollectionManager(this);
 
-        HookManager.enableHooks(this);
+        hooks.enable();
 
         Bukkit.getGlobalRegionScheduler().run(this, (task) -> collectionManager.reloadCollections());
 
@@ -108,7 +141,6 @@ public final class AuroraCollections extends JavaPlugin {
         CompletableFuture.runAsync(() ->
                 Bukkit.getOnlinePlayers().forEach(player ->
                         collectionManager.getRewardAutoCorrector().correctRewards(player)));
-
     }
 
     @Override

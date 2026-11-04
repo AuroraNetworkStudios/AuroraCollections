@@ -1,15 +1,13 @@
 package gg.auroramc.collections.hooks.nexo;
 
-import com.nexomc.nexo.api.events.custom_block.NexoCustomBlockDropLootEvent;
 import com.nexomc.nexo.api.events.custom_block.chorusblock.NexoChorusBlockDropLootEvent;
-import com.nexomc.nexo.api.events.custom_block.noteblock.NexoNoteBlockBreakEvent;
 import com.nexomc.nexo.api.events.custom_block.noteblock.NexoNoteBlockDropLootEvent;
 import com.nexomc.nexo.api.events.custom_block.stringblock.NexoStringBlockDropLootEvent;
 import com.nexomc.nexo.utils.drops.DroppedLoot;
 import gg.auroramc.aurora.api.AuroraAPI;
+import gg.auroramc.aurora.api.plugin.Hook;
 import gg.auroramc.collections.AuroraCollections;
 import gg.auroramc.collections.collection.Trigger;
-import gg.auroramc.collections.hooks.Hook;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -17,7 +15,7 @@ import org.bukkit.event.Listener;
 
 import java.util.List;
 
-public class NexoHook implements Hook, Listener {
+public class NexoHook implements Hook<AuroraCollections>, Listener {
     private AuroraCollections plugin;
 
     @Override

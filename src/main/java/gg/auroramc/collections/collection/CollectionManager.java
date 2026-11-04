@@ -16,7 +16,6 @@ import gg.auroramc.aurora.api.reward.RewardFactory;
 import gg.auroramc.aurora.api.util.NamespacedId;
 import gg.auroramc.collections.AuroraCollections;
 import gg.auroramc.collections.api.event.CollectionLevelUpEvent;
-import gg.auroramc.collections.hooks.HookManager;
 import gg.auroramc.collections.hooks.worldguard.WorldGuardHook;
 import gg.auroramc.collections.listener.BlockBreakListener;
 import gg.auroramc.collections.listener.DamageListener;
@@ -120,8 +119,8 @@ public class CollectionManager implements Listener {
             return;
         if (!AuroraAPI.getUserManager().getUser(player).isLoaded()) return;
 
-        if (HookManager.isEnabled(WorldGuardHook.class)) {
-            if (HookManager.getHook(WorldGuardHook.class).isBlocked(player, player.getLocation())) return;
+        if (plugin.getHooks().isEnabled(WorldGuardHook.class)) {
+            if (plugin.getHooks().get(WorldGuardHook.class).isBlocked(player, player.getLocation())) return;
         }
 
         CompletableFuture.runAsync(() -> {
@@ -220,7 +219,6 @@ public class CollectionManager implements Listener {
             for (var line : messageLines) {
                 count++;
                 if (line.equals("component:rewards")) {
-
                     if (!rewards.isEmpty()) {
                         text.append(Text.component(e.getPlayer(), mainConfig.getDisplayComponents().get("rewards").getTitle(), placeholders));
                     }

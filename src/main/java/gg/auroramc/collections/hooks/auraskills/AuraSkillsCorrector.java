@@ -7,6 +7,7 @@ import dev.aurelium.auraskills.api.stat.Stat;
 import dev.aurelium.auraskills.api.stat.StatModifier;
 import gg.auroramc.aurora.api.message.Placeholder;
 import gg.auroramc.aurora.api.reward.RewardCorrector;
+import gg.auroramc.aurora.api.reward.integration.AuraSkillsStatReward;
 import gg.auroramc.collections.AuroraCollections;
 import org.bukkit.entity.Player;
 
@@ -60,7 +61,6 @@ public class AuraSkillsCorrector implements RewardCorrector {
             }
         }
 
-
         for (var category : manager.getCategories()) {
             if (!category.isLevelingEnabled()) continue;
             var rewards = category.getRewards(manager.getCategoryLevel(category.getId(), player), manager.getMaxCategoryLevel(category.getId()));
@@ -80,7 +80,7 @@ public class AuraSkillsCorrector implements RewardCorrector {
 
         player.getScheduler().run(plugin, (task) -> {
             for (var entry : statMap.entrySet()) {
-                var statKey = AuraSkillsStatReward.getAURA_SKILLS_STAT() + entry.getKey().getId().toString();
+                var statKey = AuraSkillsHook.PREFIX + entry.getKey().getId().toString();
                 var user = AuraSkillsApi.get().getUser(player.getUniqueId());
 
                 var oldModifier = user.getStatModifier(statKey);

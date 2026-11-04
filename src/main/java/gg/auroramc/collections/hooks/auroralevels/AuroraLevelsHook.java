@@ -1,10 +1,10 @@
 package gg.auroramc.collections.hooks.auroralevels;
 
+import gg.auroramc.aurora.api.plugin.Hook;
 import gg.auroramc.aurora.api.util.NamespacedId;
 import gg.auroramc.collections.AuroraCollections;
-import gg.auroramc.collections.hooks.Hook;
 
-public class AuroraLevelsHook implements Hook {
+public class AuroraLevelsHook implements Hook<AuroraCollections> {
     @Override
     public void hook(AuroraCollections plugin) {
         plugin.getCollectionManager().getRewardFactory()

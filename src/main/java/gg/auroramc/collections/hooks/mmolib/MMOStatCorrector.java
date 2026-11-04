@@ -3,6 +3,7 @@ package gg.auroramc.collections.hooks.mmolib;
 import com.google.common.collect.Maps;
 import gg.auroramc.aurora.api.message.Placeholder;
 import gg.auroramc.aurora.api.reward.RewardCorrector;
+import gg.auroramc.aurora.api.reward.integration.MMOStatReward;
 import gg.auroramc.aurora.api.util.NamespacedId;
 import gg.auroramc.collections.AuroraCollections;
 import io.lumine.mythic.lib.api.player.EquipmentSlot;
@@ -11,7 +12,6 @@ import io.lumine.mythic.lib.api.stat.StatMap;
 import io.lumine.mythic.lib.api.stat.modifier.StatModifier;
 import io.lumine.mythic.lib.player.modifier.ModifierSource;
 import io.lumine.mythic.lib.player.modifier.ModifierType;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.List;
@@ -44,7 +44,7 @@ public class MMOStatCorrector implements RewardCorrector {
                 var placeholders = collection.getPlaceholders(player, i);
                 for (var reward : matcher.computeRewards(i)) {
                     if (reward instanceof MMOStatReward statReward && statReward.isValid()) {
-                        var key = NamespacedId.of(MMOStatReward.getMMO_STAT(), statReward.getStat()).toString();
+                        var key = NamespacedId.of(MMOLibHook.KEY, statReward.getStat()).toString();
                         var current = statReward.getCurrentModifier(key, stats);
                         UUID uuid = current != null ? current.getUniqueId() : UUID.randomUUID();
                         statMap.merge(statReward.getStat(),
@@ -67,7 +67,7 @@ public class MMOStatCorrector implements RewardCorrector {
 
             for (var reward : rewards) {
                 if (reward instanceof MMOStatReward statReward && statReward.isValid()) {
-                    var key = NamespacedId.of(MMOStatReward.getMMO_STAT(), statReward.getStat()).toString();
+                    var key = NamespacedId.of(MMOLibHook.KEY, statReward.getStat()).toString();
                     var current = statReward.getCurrentModifier(key, stats);
                     UUID uuid = current != null ? current.getUniqueId() : UUID.randomUUID();
                     statMap.merge(statReward.getStat(),

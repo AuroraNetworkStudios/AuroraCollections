@@ -1,14 +1,13 @@
 package gg.auroramc.collections.hooks.luckperms;
 
+import gg.auroramc.aurora.api.plugin.Hook;
 import gg.auroramc.aurora.api.reward.PermissionReward;
 import gg.auroramc.aurora.api.util.NamespacedId;
 import gg.auroramc.collections.AuroraCollections;
-import gg.auroramc.collections.hooks.Hook;
 
-public class LuckPermsHook implements Hook {
+public class LuckPermsHook implements Hook<AuroraCollections> {
     @Override
     public void hook(AuroraCollections plugin) {
-
         plugin.getCollectionManager().getRewardFactory()
                 .registerRewardType(NamespacedId.fromDefault("permission"), PermissionReward.class);
 

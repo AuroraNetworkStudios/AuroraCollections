@@ -1,8 +1,8 @@
 package gg.auroramc.collections.hooks.customfishing;
 
+import gg.auroramc.aurora.api.plugin.Hook;
 import gg.auroramc.collections.AuroraCollections;
 import gg.auroramc.collections.config.CollectionConfig;
-import gg.auroramc.collections.hooks.Hook;
 import gg.auroramc.collections.hooks.customfishing.listener.CustomFishingListener;
 import net.momirealms.customfishing.api.BukkitCustomFishingPlugin;
 import net.momirealms.customfishing.api.mechanic.loot.LootType;
@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-public class CustomFishingHook implements Hook {
+public class CustomFishingHook implements Hook<AuroraCollections> {
     @Override
     public void hook(AuroraCollections plugin) {
         Bukkit.getPluginManager().registerEvents(new CustomFishingListener(plugin), plugin);

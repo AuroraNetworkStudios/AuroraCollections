@@ -1,15 +1,15 @@
 package gg.auroramc.collections.hooks.beeminions;
 
+import gg.auroramc.aurora.api.plugin.Hook;
 import gg.auroramc.collections.AuroraCollections;
 import gg.auroramc.collections.collection.Trigger;
-import gg.auroramc.collections.hooks.Hook;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.me.leo_s.beeminions.api.events.RemoveItemStorageMinion;
 
-public class BeeMinionsHook implements Hook, Listener {
+public class BeeMinionsHook implements Hook<AuroraCollections>, Listener {
     private AuroraCollections plugin;
 
     @Override

@@ -2,17 +2,17 @@ package gg.auroramc.collections.hooks.mmoitems;
 
 import gg.auroramc.aurora.api.AuroraAPI;
 import gg.auroramc.aurora.api.item.TypeId;
+import gg.auroramc.aurora.api.plugin.Hook;
 import gg.auroramc.collections.AuroraCollections;
 import gg.auroramc.collections.collection.Trigger;
-import gg.auroramc.collections.hooks.Hook;
 import io.lumine.mythic.lib.api.item.NBTItem;
+import net.Indyuce.mmoitems.api.event.ItemDropEvent;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import net.Indyuce.mmoitems.api.event.ItemDropEvent;
 
-public class MMOItemsHook implements Hook, Listener {
+public class MMOItemsHook implements Hook<AuroraCollections>, Listener {
     private AuroraCollections plugin;
 
     @Override

@@ -1,13 +1,17 @@
 package gg.auroramc.collections.hooks.auraskills;
 
+import gg.auroramc.aurora.api.plugin.Hook;
+import gg.auroramc.aurora.api.reward.integration.AuraSkillsStatReward;
+import gg.auroramc.aurora.api.reward.integration.AuraSkillsXpReward;
 import gg.auroramc.aurora.api.util.NamespacedId;
 import gg.auroramc.collections.AuroraCollections;
-import gg.auroramc.collections.hooks.Hook;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 
 @Getter
-public class AuraSkillsHook implements Hook {
+public class AuraSkillsHook implements Hook<AuroraCollections> {
+    // Collections' stat modifiers in AuraSkills start with this, kept apart from other plugins'
+    public static final String PREFIX = "AURORA_COLLECTIONS_";
 
     private AuraSkillsCorrector corrector;
 
@@ -16,9 +20,9 @@ public class AuraSkillsHook implements Hook {
         this.corrector = new AuraSkillsCorrector(plugin);
 
         plugin.getCollectionManager().getRewardFactory()
-                .registerRewardType(NamespacedId.fromDefault("auraskills_stat"), AuraSkillsStatReward.class);
+                .registerRewardType(NamespacedId.fromDefault("auraskills_stat"), () -> new AuraSkillsStatReward(PREFIX, AuroraCollections.logger()));
         plugin.getCollectionManager().getRewardFactory()
-                .registerRewardType(NamespacedId.fromDefault("auraskills_xp"), AuraSkillsXpReward.class);
+                .registerRewardType(NamespacedId.fromDefault("auraskills_xp"), () -> new AuraSkillsXpReward(AuroraCollections.logger()));
 
         plugin.getCollectionManager().getRewardAutoCorrector()
                 .registerCorrector(NamespacedId.fromDefault("auraskills_stat"), corrector);

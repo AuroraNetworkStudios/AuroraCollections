@@ -3,7 +3,9 @@ package gg.auroramc.collections.hooks.mythic.reward;
 import com.google.common.collect.Maps;
 import gg.auroramc.aurora.api.message.Placeholder;
 import gg.auroramc.aurora.api.reward.RewardCorrector;
+import gg.auroramc.aurora.api.reward.integration.MythicStatReward;
 import gg.auroramc.collections.AuroraCollections;
+import gg.auroramc.collections.hooks.mythic.MythicHook;
 import io.lumine.mythic.bukkit.MythicBukkit;
 import io.lumine.mythic.core.skills.stats.StatModifierType;
 import io.lumine.mythic.core.skills.stats.StatType;
@@ -11,7 +13,6 @@ import org.bukkit.entity.Player;
 
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 
 public class MythicStatCorrector implements RewardCorrector {
     private final AuroraCollections plugin;
@@ -31,7 +32,7 @@ public class MythicStatCorrector implements RewardCorrector {
         mythic.getStatManager().getStats().values()
                 .forEach(statType -> {
                     if (!statType.isEnabled()) return;
-                    registry.removeValue(statType, MythicStatReward.getSource());
+                    registry.removeValue(statType, MythicHook.SOURCE);
                 });
 
         // Gather new stat modifiers
@@ -76,7 +77,7 @@ public class MythicStatCorrector implements RewardCorrector {
                 var modifierType = modifierEntry.getKey();
                 var value = modifierEntry.getValue();
                 AuroraCollections.logger().debug("Adding stat " + statType.getKey() + " with value " + value + " to player " + player.getName());
-                registry.putValue(statType, MythicStatReward.getSource(), modifierType, value);
+                registry.putValue(statType, MythicHook.SOURCE, modifierType, value);
             }
         }
     }
